@@ -9,16 +9,16 @@ const Logo: React.FC<LogoProps> = ({ size = 'medium', className = '' }) => {
   // Déterminer les tailles en fonction des options
   const sizes = {
     small: {
-      container: 'w-9 h-9',
-      icon: 'w-6 h-6'
+      container: 'w-12 h-12',
+      icon: 'w-8 h-8'
     },
     medium: {
-      container: 'w-20 h-20',
-      icon: 'w-12 h-12'
+      container: 'w-24 h-24',
+      icon: 'w-16 h-16'
     },
     large: {
-      container: 'w-40 h-40',
-      icon: 'w-24 h-24'
+      container: 'w-48 h-48',
+      icon: 'w-32 h-32'
     }
   }
 
