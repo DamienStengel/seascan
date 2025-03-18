@@ -37,7 +37,7 @@ const OnboardingScreen: React.FC = () => {
         <Logo size="large" className="mb-8" />
         
         {/* Titre et sous-titre */}
-        <h1 className="text-3xl font-bold mb-2">SEA Scan</h1>
+        <h1 className="text-3xl font-bold mb-2">OceaPulse</h1>
         <p className="text-lg mb-8 opacity-90">Ensemble pour des océans plus propres</p>
         
         {/* Carrousel */}

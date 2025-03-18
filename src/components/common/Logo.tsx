@@ -13,12 +13,12 @@ const Logo: React.FC<LogoProps> = ({ size = 'medium', className = '' }) => {
       icon: 'w-6 h-6'
     },
     medium: {
-      container: 'w-16 h-16',
-      icon: 'w-10 h-10'
+      container: 'w-20 h-20',
+      icon: 'w-12 h-12'
     },
     large: {
-      container: 'w-30 h-30',
-      icon: 'w-16 h-16'
+      container: 'w-40 h-40',
+      icon: 'w-24 h-24'
     }
   }
 

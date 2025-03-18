@@ -103,6 +103,7 @@ const MapView: React.FC<MapViewProps> = ({ reports, events = [], center = [46.22
       variants={mapVariants}
       initial="hidden"
       animate="visible"
+      style={{ zIndex: 10 }}
     >
       <MapContainer
         center={center}
@@ -110,6 +111,7 @@ const MapView: React.FC<MapViewProps> = ({ reports, events = [], center = [46.22
         style={{ height: '100%', width: '100%' }}
         zoomControl={false}
         attributionControl={false}
+        className="z-10"
       >
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

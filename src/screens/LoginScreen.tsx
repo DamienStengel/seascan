@@ -36,7 +36,7 @@ const LoginScreen: React.FC = () => {
       <div className="flex-1 px-6 pt-8 pb-16 overflow-auto">
         {/* Logo */}
         <div className="flex justify-center mb-6">
-          <Logo size="medium" />
+          <Logo size="large" />
         </div>
         
         {/* Formulaire */}
