@@ -1,12 +1,14 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import { motion } from 'framer-motion'
 
 interface BottomNavigationProps {
   activeTab: string
   onTabChange: (tab: string) => void
+  onAddClick: () => void
 }
 
-const BottomNavigation: React.FC<BottomNavigationProps> = ({ activeTab, onTabChange }) => {
+const BottomNavigation: React.FC<BottomNavigationProps> = ({ activeTab, onTabChange, onAddClick }) => {
   // Définir les onglets de navigation
   const tabs = [
     {
@@ -30,12 +32,6 @@ const BottomNavigation: React.FC<BottomNavigationProps> = ({ activeTab, onTabCha
       path: '/dashboard/map'
     },
     {
-      id: 'placeholder',
-      label: '',
-      icon: <div></div>,
-      path: ''
-    },
-    {
       id: 'events',
       label: 'Événements',
       icon: (
@@ -57,17 +53,56 @@ const BottomNavigation: React.FC<BottomNavigationProps> = ({ activeTab, onTabCha
     }
   ]
 
+  // Variants pour l'animation du bouton
+  const buttonVariants = {
+    rest: { 
+      scale: 1,
+      boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
+    },
+    hover: { 
+      scale: 1.05,
+      boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)'
+    },
+    tap: { 
+      scale: 0.95
+    }
+  };
+
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-10">
-      <div className="flex items-center justify-around">
-        {tabs.map(tab => (
+    <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50">
+      <div className="flex items-center justify-around relative">
+        {/* Bouton d'ajout central */}
+        <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+          <motion.button
+            className="bg-gradient-to-r from-blue-600 to-teal-500 w-14 h-14 rounded-full shadow-lg flex items-center justify-center text-white"
+            onClick={onAddClick}
+            variants={buttonVariants}
+            initial="rest"
+            whileHover="hover"
+            whileTap="tap"
+            transition={{ type: "spring", stiffness: 400, damping: 17 }}
+            aria-label="Ajouter un signalement"
+          >
+            <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+                strokeWidth={2} 
+                d="M12 6v6m0 0v6m0-6h6m-6 0H6" 
+              />
+            </svg>
+          </motion.button>
+        </div>
+        
+        {/* Onglets de navigation */}
+        {tabs.map((tab, index) => (
           <Link
             key={tab.id}
             to={tab.path}
             className={`flex flex-col items-center py-2 flex-1 ${
-              tab.id === 'placeholder' ? 'pointer-events-none' : ''
+              index === 2 ? 'invisible' : '' // Rendre invisible l'onglet du milieu pour l'espacement
             }`}
-            onClick={() => tab.id !== 'placeholder' && onTabChange(tab.id)}
+            onClick={() => onTabChange(tab.id)}
           >
             <div 
               className={`p-1 rounded-full ${

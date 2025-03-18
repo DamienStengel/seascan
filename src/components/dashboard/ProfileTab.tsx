@@ -1,123 +1,191 @@
 import React from 'react'
-import { useNavigate } from 'react-router-dom'
-import { useAppContext } from '@/contexts/AppContext'
+import { motion } from 'framer-motion'
+import { User, Badge } from '@/types'
 
-const ProfileTab: React.FC = () => {
-  const navigate = useNavigate()
-  const { state, logout } = useAppContext()
+interface ProfileTabProps {
+  user?: User | null;
+}
+
+const ProfileTab: React.FC<ProfileTabProps> = ({ user }) => {
+  // Utiliser un utilisateur par défaut si aucun n'est fourni
+  const currentUser = user || {
+    id: 'default',
+    firstName: 'Utilisateur',
+    lastName: 'Anonyme',
+    email: 'user@example.com',
+    profilePicture: '/api/placeholder/100/100?text=UA',
+    badges: [],
+    stats: {
+      signalements: 0,
+      participations: 0,
+      points: 0,
+      niveau: 'Débutant'
+    }
+  };
+
+  // Animation variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: { 
+      opacity: 1,
+      transition: { 
+        when: "beforeChildren",
+        staggerChildren: 0.1
+      }
+    }
+  };
   
-  // Fonction pour se déconnecter
-  const handleLogout = () => {
-    logout()
-    navigate('/')
-  }
-  
-  // Données fictives pour les statistiques
-  const userStats = {
-    signalements: 8,
-    participations: 3,
-    points: 156,
-    niveau: 'Éco-gardien',
-    badges: [
-      { id: 1, name: 'Premier signalement', icon: '🌊' },
-      { id: 2, name: 'Participation événement', icon: '👥' },
-      { id: 3, name: 'Explorateur', icon: '🔭' }
-    ]
-  }
-  
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: { type: "spring", stiffness: 300, damping: 24 }
+    }
+  };
+
   return (
-    <div className="py-4 px-4">
-      {/* En-tête du profil */}
-      <div className="bg-white rounded-xl shadow-sm p-6 mb-6 text-center">
-        <div className="w-24 h-24 rounded-full bg-blue-100 mx-auto mb-4 flex items-center justify-center">
-          {state.user?.profilePicture ? (
+    <motion.div 
+      className="py-4 px-4 space-y-6"
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+    >
+      <motion.section variants={itemVariants}>
+        <div className="bg-white rounded-xl shadow-sm p-4">
+          <div className="flex items-center">
             <img 
-              src={state.user.profilePicture} 
-              alt="Avatar" 
-              className="w-full h-full object-cover rounded-full" 
+              src={currentUser.profilePicture} 
+              alt={`${currentUser.firstName} ${currentUser.lastName}`} 
+              className="w-16 h-16 rounded-full object-cover" 
             />
-          ) : (
-            <svg className="w-12 h-12 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path 
-                strokeLinecap="round" 
-                strokeLinejoin="round" 
-                strokeWidth={1.5} 
-                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" 
-              />
-            </svg>
+            <div className="ml-4">
+              <h1 className="text-xl font-bold">{currentUser.firstName} {currentUser.lastName}</h1>
+              <div className="text-gray-600">{currentUser.email}</div>
+              <div className="flex mt-1">
+                <span className="bg-blue-100 text-blue-800 text-xs px-2 py-0.5 rounded-full">
+                  Niveau: {currentUser.stats?.niveau || 'Débutant'}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </motion.section>
+      
+      <motion.section variants={itemVariants}>
+        <h2 className="text-lg font-bold mb-3">Mes statistiques</h2>
+        <div className="bg-white rounded-xl shadow-sm p-4">
+          <div className="grid grid-cols-3 gap-4">
+            <div className="text-center">
+              <div className="text-2xl font-bold text-blue-600">{currentUser.stats?.signalements || 0}</div>
+              <div className="text-sm text-gray-600">Signalements</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-green-600">{currentUser.stats?.participations || 0}</div>
+              <div className="text-sm text-gray-600">Participations</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-purple-600">{currentUser.stats?.points || 0}</div>
+              <div className="text-sm text-gray-600">Points</div>
+            </div>
+          </div>
+          
+          {currentUser.stats && currentUser.stats.points > 0 && (
+            <div className="mt-4">
+              <div className="text-sm text-gray-600 mb-1">
+                Progression vers le prochain niveau
+              </div>
+              <div className="bg-gray-200 h-2 rounded-full overflow-hidden">
+                <motion.div 
+                  className="bg-blue-600 h-full rounded-full"
+                  initial={{ width: 0 }}
+                  animate={{ width: `${(currentUser.stats.points % 100) / 100 * 100}%` }}
+                  transition={{ duration: 1, ease: "easeOut" }}
+                ></motion.div>
+              </div>
+              <div className="flex justify-between text-xs text-gray-500 mt-1">
+                <span>Niveau {currentUser.stats.niveau}</span>
+                <span>{100 - (currentUser.stats.points % 100)} points pour le niveau suivant</span>
+              </div>
+            </div>
           )}
         </div>
-        
-        <h1 className="text-xl font-bold mb-1">
-          {state.user?.firstName} {state.user?.lastName}
-        </h1>
-        <div className="text-gray-600 mb-3">{state.user?.email}</div>
-        
-        <div className="inline-block bg-blue-50 text-blue-600 px-3 py-1 rounded-full text-sm font-medium">
-          {userStats.niveau}
-        </div>
-      </div>
+      </motion.section>
       
-      {/* Statistiques */}
-      <div className="bg-white rounded-xl shadow-sm p-4 mb-6">
-        <h2 className="text-lg font-bold mb-3">Mes statistiques</h2>
-        <div className="grid grid-cols-3 gap-3">
-          <div className="text-center">
-            <div className="text-2xl font-bold text-blue-600">{userStats.signalements}</div>
-            <div className="text-sm text-gray-600">Signalements</div>
-          </div>
-          <div className="text-center">
-            <div className="text-2xl font-bold text-teal-500">{userStats.participations}</div>
-            <div className="text-sm text-gray-600">Événements</div>
-          </div>
-          <div className="text-center">
-            <div className="text-2xl font-bold text-green-500">{userStats.points}</div>
-            <div className="text-sm text-gray-600">Points</div>
-          </div>
-        </div>
-      </div>
-      
-      {/* Badges */}
-      <div className="bg-white rounded-xl shadow-sm p-4 mb-6">
+      <motion.section variants={itemVariants}>
         <h2 className="text-lg font-bold mb-3">Mes badges</h2>
-        <div className="flex flex-wrap gap-3">
-          {userStats.badges.map(badge => (
-            <div key={badge.id} className="flex flex-col items-center bg-gray-50 p-3 rounded-lg">
-              <div className="text-2xl mb-1">{badge.icon}</div>
-              <div className="text-xs text-gray-700">{badge.name}</div>
+        {currentUser.badges && currentUser.badges.length > 0 ? (
+          <div className="bg-white rounded-xl shadow-sm p-4">
+            <div className="grid grid-cols-2 gap-3">
+              {currentUser.badges.map((badge: Badge) => (
+                <div key={badge.id} className="flex items-center p-2 bg-blue-50 rounded-lg">
+                  <div className="text-2xl mr-3">{badge.icon}</div>
+                  <div>
+                    <div className="font-medium">{badge.name}</div>
+                    {badge.dateObtained && (
+                      <div className="text-xs text-gray-500">
+                        Obtenu le {badge.dateObtained.toLocaleDateString()}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-      </div>
+          </div>
+        ) : (
+          <div className="bg-white rounded-xl shadow-sm p-6 text-center">
+            <div className="text-5xl mb-3">🏆</div>
+            <h3 className="text-lg font-medium mb-2">Pas encore de badge</h3>
+            <p className="text-gray-500">
+              Participez à des événements et signalez des pollutions pour gagner des badges.
+            </p>
+          </div>
+        )}
+      </motion.section>
       
-      {/* Actions */}
-      <div className="bg-white rounded-xl shadow-sm p-4 mb-6 space-y-2">
-        <button className="flex items-center w-full px-4 py-3 text-left hover:bg-gray-50 rounded-lg transition-colors">
-          <svg className="w-5 h-5 mr-3 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-          </svg>
-          Paramètres
-        </button>
-        
-        <button className="flex items-center w-full px-4 py-3 text-left hover:bg-gray-50 rounded-lg transition-colors">
-          <svg className="w-5 h-5 mr-3 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          Aide et support
-        </button>
-        
-        <button 
-          onClick={handleLogout}
-          className="flex items-center w-full px-4 py-3 text-left text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-        >
-          <svg className="w-5 h-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-          </svg>
-          Se déconnecter
-        </button>
+      <motion.section variants={itemVariants}>
+        <h2 className="text-lg font-bold mb-3">Paramètres</h2>
+        <div className="bg-white rounded-xl shadow-sm p-4 space-y-4">
+          <button className="flex items-center justify-between w-full py-2 text-left">
+            <span>Préférences de notification</span>
+            <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+          
+          <div className="border-t border-gray-100"></div>
+          
+          <button className="flex items-center justify-between w-full py-2 text-left">
+            <span>Confidentialité</span>
+            <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+          
+          <div className="border-t border-gray-100"></div>
+          
+          <button className="flex items-center justify-between w-full py-2 text-left">
+            <span>Aide et support</span>
+            <svg className="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+          
+          <div className="border-t border-gray-100"></div>
+          
+          <button className="flex items-center justify-between w-full py-2 text-left text-red-500">
+            <span>Déconnexion</span>
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            </svg>
+          </button>
+        </div>
+      </motion.section>
+      
+      <div className="text-center text-xs text-gray-400 mt-8">
+        OcéaPulse v1.0.0
       </div>
-    </div>
+    </motion.div>
   )
 }
 

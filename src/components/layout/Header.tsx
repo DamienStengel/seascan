@@ -1,4 +1,5 @@
 import React from 'react'
+import logo from '../../assets/images/logo.png'
 
 interface HeaderProps {
   title?: string
@@ -49,8 +50,11 @@ const Header: React.FC<HeaderProps> = ({
         </button>
       )}
 
-      {title && !showSearch && (
-        <h1 className="text-xl font-semibold flex-1">{title}</h1>
+      {!showSearch && (
+        <div className="flex items-center flex-1">
+          <img src={logo} alt="OcéaPulse Logo" className="h-8 w-8 mr-2" />
+          <h1 className="text-xl font-semibold">OcéaPulse</h1>
+        </div>
       )}
 
       {showSearch && (
