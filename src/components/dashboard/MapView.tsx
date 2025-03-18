@@ -28,15 +28,8 @@ const MapView: React.FC<MapViewProps> = ({ reports, center = [46.2276, 2.2137], 
   
   // Fonction pour déterminer l'icône en fonction du type de signalement
   const getMarkerIcon = (type: string) => {
-    // Définir différentes couleurs pour différents types de signalements
-    const iconColor = 
-      type === 'Déversement de carburant' ? 'red' :
-      type === 'Déchets plastiques' ? 'blue' :
-      type === 'Filets abandonnés' ? 'green' :
-      'gray';
-    
     return new Icon({
-      iconUrl: `/api/placeholder/30/30?text=💧&color=${iconColor}`,
+      iconUrl: '/assets/images/logo.png',
       iconSize: [30, 30],
       iconAnchor: [15, 15],
       popupAnchor: [0, -15]

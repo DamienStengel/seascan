@@ -5,10 +5,10 @@ import { motion } from 'framer-motion'
 interface BottomNavigationProps {
   activeTab: string
   onTabChange: (tab: string) => void
-  onAddClick: () => void
+  onAddReport: () => void
 }
 
-const BottomNavigation: React.FC<BottomNavigationProps> = ({ activeTab, onTabChange, onAddClick }) => {
+const BottomNavigation: React.FC<BottomNavigationProps> = ({ activeTab, onTabChange, onAddReport }) => {
   // Définir les onglets de navigation
   const tabs = [
     {
@@ -55,7 +55,7 @@ const BottomNavigation: React.FC<BottomNavigationProps> = ({ activeTab, onTabCha
 
   // Variants pour l'animation du bouton
   const buttonVariants = {
-    rest: { 
+    initial: { 
       scale: 1,
       boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
     },
@@ -69,39 +69,62 @@ const BottomNavigation: React.FC<BottomNavigationProps> = ({ activeTab, onTabCha
   };
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50">
-      <div className="flex items-center justify-around relative">
-        {/* Bouton d'ajout central */}
-        <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+    <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-10">
+      <div className="flex items-center justify-around">
+        {tabs.slice(0, 2).map(tab => (
+          <Link
+            key={tab.id}
+            to={tab.path}
+            className="flex flex-col items-center py-2 flex-1"
+            onClick={() => onTabChange(tab.id)}
+          >
+            <div 
+              className={`p-1 rounded-full ${
+                activeTab === tab.id ? 'text-blue-600' : 'text-gray-500'
+              }`}
+            >
+              {tab.icon}
+            </div>
+            {tab.label && (
+              <span 
+                className={`text-xs mt-1 ${
+                  activeTab === tab.id ? 'font-medium text-blue-600' : 'text-gray-500'
+                }`}
+              >
+                {tab.label}
+              </span>
+            )}
+          </Link>
+        ))}
+        
+        {/* Bouton d'ajout de signalement */}
+        <div className="flex-1 flex justify-center -mt-5 relative z-20">
           <motion.button
             className="bg-gradient-to-r from-blue-600 to-teal-500 w-14 h-14 rounded-full shadow-lg flex items-center justify-center text-white"
-            onClick={onAddClick}
+            onClick={onAddReport}
             variants={buttonVariants}
-            initial="rest"
+            initial="initial"
             whileHover="hover"
             whileTap="tap"
             transition={{ type: "spring", stiffness: 400, damping: 17 }}
-            aria-label="Ajouter un signalement"
+            aria-label="Signaler"
           >
             <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path 
                 strokeLinecap="round" 
                 strokeLinejoin="round" 
                 strokeWidth={2} 
-                d="M12 6v6m0 0v6m0-6h6m-6 0H6" 
+                d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" 
               />
             </svg>
           </motion.button>
         </div>
         
-        {/* Onglets de navigation */}
-        {tabs.map((tab, index) => (
+        {tabs.slice(2, 4).map(tab => (
           <Link
             key={tab.id}
             to={tab.path}
-            className={`flex flex-col items-center py-2 flex-1 ${
-              index === 2 ? 'invisible' : '' // Rendre invisible l'onglet du milieu pour l'espacement
-            }`}
+            className="flex flex-col items-center py-2 flex-1"
             onClick={() => onTabChange(tab.id)}
           >
             <div 

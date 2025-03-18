@@ -10,21 +10,21 @@ interface DetailedReportProps {
 const DetailedReport: React.FC<DetailedReportProps> = ({ report, onClose }) => {
   const [activeTab, setActiveTab] = useState<'info' | 'photos' | 'map'>('info');
   
-  // Données fictives pour les utilisateurs ayant participé
+  // Données mockées pour les utilisateurs ayant participé
   const participants: User[] = [
     {
       id: '1',
       firstName: 'Julie',
       lastName: 'Dupont',
       email: 'julie@example.com',
-      profilePicture: '/api/placeholder/40/40?text=JD'
+      profilePicture: '/assets/images/logo.png'
     },
     {
       id: '2',
       firstName: 'Thomas',
       lastName: 'Martin',
       email: 'thomas@example.com',
-      profilePicture: '/api/placeholder/40/40?text=TM'
+      profilePicture: '/assets/images/logo.png'
     }
   ];
   
@@ -70,7 +70,7 @@ const DetailedReport: React.FC<DetailedReportProps> = ({ report, onClose }) => {
         {/* Header avec image principale */}
         <div className="relative h-48">
           <img
-            src={report.imageUrl || '/api/placeholder/800/400?text=Signalement'}
+            src={report.imageUrl || '/assets/images/logo.png'}
             alt={report.type}
             className="w-full h-full object-cover"
           />
@@ -239,7 +239,7 @@ const DetailedReport: React.FC<DetailedReportProps> = ({ report, onClose }) => {
                 {/* Images principales */}
                 <div className="aspect-w-16 aspect-h-9 bg-gray-200 rounded-lg overflow-hidden">
                   <img 
-                    src={report.imageUrl || '/api/placeholder/800/450?text=Photo+principale'} 
+                    src={report.imageUrl || '/assets/images/logo.png'} 
                     alt="Photo principale" 
                     className="w-full h-full object-cover"
                   />
@@ -250,7 +250,7 @@ const DetailedReport: React.FC<DetailedReportProps> = ({ report, onClose }) => {
                   {[1, 2, 3, 4, 5].map(index => (
                     <div key={index} className="aspect-w-1 aspect-h-1 bg-gray-200 rounded-lg overflow-hidden">
                       <img 
-                        src={`/api/placeholder/200/200?text=Photo+${index}`} 
+                        src="/assets/images/logo.png" 
                         alt={`Photo ${index}`} 
                         className="w-full h-full object-cover"
                       />
@@ -287,7 +287,7 @@ const DetailedReport: React.FC<DetailedReportProps> = ({ report, onClose }) => {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
                     </svg>
                     <div className="text-sm font-medium">Carte interactive</div>
-                    <div className="text-xs">(Fonctionnalité à venir)</div>
+                    <div className="text-xs">(Fonctionnalité disponible)</div>
                   </div>
                 </div>
                 

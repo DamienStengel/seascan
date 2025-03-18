@@ -1,17 +1,16 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { Routes, Route, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAppContext } from '@/contexts/AppContext'
-import { mockAPI } from '@/assets/mock-data'
 import Header from '@/components/layout/Header'
 import BottomNavigation from '@/components/layout/BottomNavigation'
 import HomeTab from '@/components/dashboard/HomeTab'
 import MapTab from '@/components/dashboard/MapTab'
 import EventsTab from '@/components/dashboard/EventsTab'
 import ProfileTab from '@/components/dashboard/ProfileTab'
-import DetailedReport from '@/components/dashboard/DetailedReport'
 import ReportForm from '@/components/dashboard/ReportForm'
-import { Signalement, Event } from '@/types'
+import DetailedReport from '@/components/dashboard/DetailedReport'
+import { Signalement } from '@/types'
 
 const DashboardScreen: React.FC = () => {
   const navigate = useNavigate()
@@ -19,30 +18,46 @@ const DashboardScreen: React.FC = () => {
   const [showDetailModal, setShowDetailModal] = useState(false)
   const [showReportForm, setShowReportForm] = useState(false)
   const [selectedReport, setSelectedReport] = useState<Signalement | null>(null)
-  const [reports, setReports] = useState<Signalement[]>([])
-  const [events, setEvents] = useState<Event[]>([])
-  const [isLoading, setIsLoading] = useState(true)
   
-  // Charger les données mockées au chargement
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setIsLoading(true)
-        // Charger les signalements
-        const reportsData = await mockAPI.getReports()
-        setReports(reportsData)
-        // Charger les événements
-        const eventsData = await mockAPI.getEvents()
-        setEvents(eventsData)
-      } catch (error) {
-        console.error('Erreur lors du chargement des données:', error)
-      } finally {
-        setIsLoading(false)
-      }
+  // Données mockées pour les signalements
+  const recentReports: Signalement[] = [
+    {
+      id: 1,
+      type: 'Déversement de carburant',
+      location: 'Plage de la Salie',
+      time: 'Il y a 2 heures',
+      status: 'Très urgent',
+      imageUrl: '/assets/images/logo.png',
+      description: 'Déversement important de carburant observé près de la côte. Une nappe noire s\'étend sur environ 50 mètres. Risque majeur pour les oiseaux marins et la faune aquatique.',
+      latitude: 44.6205,
+      longitude: -1.1887,
+      categories: ['Toxique', 'Hydrocarbures']
+    },
+    {
+      id: 2,
+      type: 'Déchets plastiques',
+      location: 'Côte des Basques',
+      time: 'Il y a 5 heures',
+      status: 'Urgent',
+      imageUrl: '/assets/images/logo.png',
+      description: 'Accumulation de déchets plastiques sur la plage, principalement des bouteilles et des emballages. Zone d\'environ 20m² très polluée.',
+      latitude: 43.4789,
+      longitude: -1.5686,
+      categories: ['Plastique', 'Déchets divers']
+    },
+    {
+      id: 3,
+      type: 'Filets abandonnés',
+      location: 'Port de Capbreton',
+      time: 'Hier',
+      status: 'En cours',
+      imageUrl: '/assets/images/logo.png',
+      description: 'Filets de pêche abandonnés ou perdus, emmêlés autour des rochers. Danger potentiel pour la faune marine, risque d\'enchevêtrement.',
+      latitude: 43.6435,
+      longitude: -1.4468,
+      categories: ['Matériel de pêche', 'Filets']
     }
-    
-    fetchData()
-  }, [])
+  ];
   
   // Fonction pour gérer le changement d'onglet
   const handleTabChange = (tab: string) => {
@@ -73,31 +88,22 @@ const DashboardScreen: React.FC = () => {
     setSelectedReport(report);
     setShowDetailModal(true);
   };
-
-  // Gestion de l'ouverture du formulaire de signalement
-  const handleAddClick = () => {
+  
+  // Fonction pour ouvrir le formulaire de signalement
+  const handleAddReport = () => {
     setShowReportForm(true);
   };
-
-  // Fermeture du formulaire de signalement
-  const handleFormClose = () => {
+  
+  // Fonction pour fermer le formulaire de signalement
+  const handleCloseReportForm = () => {
     setShowReportForm(false);
   };
-
-  // Soumission du formulaire de signalement
-  const handleFormSubmit = async (reportData: any) => {
-    try {
-      setIsLoading(true);
-      // Ajouter le signalement via l'API mockée
-      const newReport = await mockAPI.addReport(reportData);
-      // Mettre à jour la liste des signalements
-      setReports(prev => [newReport, ...prev]);
-      setShowReportForm(false);
-    } catch (error) {
-      console.error('Erreur lors de l\'ajout du signalement:', error);
-    } finally {
-      setIsLoading(false);
-    }
+  
+  // Fonction pour soumettre un signalement
+  const handleSubmitReport = (reportData: any) => {
+    console.log('Rapport soumis:', reportData);
+    setShowReportForm(false);
+    // Ici on pourrait ajouter le nouveau signalement aux données mockées
   };
   
   // Animation pour les transitions de page
@@ -129,24 +135,6 @@ const DashboardScreen: React.FC = () => {
     setShowDetailModal(false);
   };
   
-  // Afficher un état de chargement si nécessaire
-  if (isLoading) {
-    return (
-      <div className="flex flex-col h-screen bg-gray-50">
-        <Header />
-        <div className="flex-1 flex items-center justify-center">
-          <div className="text-center">
-            <svg className="animate-spin w-12 h-12 mx-auto mb-3 text-blue-600" viewBox="0 0 24 24">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"></circle>
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
-            <div className="text-xl font-medium text-blue-600">Chargement...</div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-  
   return (
     <div className="flex flex-col h-screen bg-gray-50">
       {/* En-tête avec barre de recherche */}
@@ -171,7 +159,7 @@ const DashboardScreen: React.FC = () => {
                   variants={pageVariants}
                   className="h-full"
                 >
-                  <HomeTab onReportClick={handleReportClick} reports={reports} />
+                  <HomeTab onReportClick={handleReportClick} reports={recentReports} />
                 </motion.div>
               } 
             />
@@ -186,7 +174,7 @@ const DashboardScreen: React.FC = () => {
                   variants={pageVariants}
                   className="h-full"
                 >
-                  <MapTab onReportClick={handleReportClick} reports={reports} />
+                  <MapTab onReportClick={handleReportClick} reports={recentReports} />
                 </motion.div>
               } 
             />
@@ -201,7 +189,7 @@ const DashboardScreen: React.FC = () => {
                   variants={pageVariants}
                   className="h-full"
                 >
-                  <EventsTab events={events} />
+                  <EventsTab />
                 </motion.div>
               } 
             />
@@ -216,7 +204,7 @@ const DashboardScreen: React.FC = () => {
                   variants={pageVariants}
                   className="h-full"
                 >
-                  <ProfileTab user={state.user} />
+                  <ProfileTab />
                 </motion.div>
               } 
             />
@@ -228,7 +216,7 @@ const DashboardScreen: React.FC = () => {
       <BottomNavigation 
         activeTab={state.activeTab} 
         onTabChange={handleTabChange}
-        onAddClick={handleAddClick}
+        onAddReport={handleAddReport}
       />
       
       {/* Modal de détails d'un signalement */}
@@ -238,12 +226,12 @@ const DashboardScreen: React.FC = () => {
           onClose={handleCloseDetailModal}
         />
       )}
-
+      
       {/* Formulaire de signalement */}
       {showReportForm && (
         <ReportForm 
-          onClose={handleFormClose} 
-          onSubmit={handleFormSubmit} 
+          onClose={handleCloseReportForm} 
+          onSubmit={handleSubmitReport} 
         />
       )}
     </div>

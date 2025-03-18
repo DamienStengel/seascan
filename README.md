@@ -1,8 +1,8 @@
-# SEA Scan
+# OcéaPulse
 
 ## À propos du projet
 
-SEA Scan est une application mobile dédiée à la protection des océans, permettant aux utilisateurs de signaler les pollutions marines, de participer à des actions de nettoyage et de suivre leur impact environnemental.
+OcéaPulse est une application mobile dédiée à la protection des océans, permettant aux utilisateurs de signaler les pollutions marines, de participer à des actions de nettoyage et de suivre leur impact environnemental.
 
 ## Fonctionnalités principales
 
@@ -34,14 +34,16 @@ src/
 - TypeScript
 - React Router
 - Tailwind CSS
+- Framer Motion
+- Leaflet
 - Vite
 
 ## Installation
 
 1. Clonez le dépôt
    ```
-   git clone https://github.com/votre-username/sea-scan.git
-   cd sea-scan
+   git clone https://github.com/votre-username/oceapulse.git
+   cd oceapulse
    ```
 
 2. Installez les dépendances
@@ -61,12 +63,16 @@ src/
 
 ## Design UI/UX
 
-Le design de l'application est basé sur une palette de couleurs océaniques, avec un focus sur l'accessibilité et l'expérience utilisateur intuitive.
+Le design de l'application est basé sur une palette de couleurs océaniques, avec un focus sur l'accessibilité et l'expérience utilisateur intuitive. L'application utilise Framer Motion pour des animations fluides et naturelles.
 
 ### Palette de couleurs
 - **Primaire:** #1A73E8 (bleu océan)
 - **Secondaire:** #00BFA5 (turquoise)
 - **Accentuation:** #FF6D00 (orange)
+
+## Mode démo
+
+L'application fonctionne entièrement en mode démonstration, sans nécessiter de backend. Toutes les données sont simulées localement pour permettre une expérience utilisateur complète.
 
 ## Prochaines étapes
 
