@@ -1,9 +1,15 @@
 import React from 'react'
+import { motion } from 'framer-motion'
 import { Signalement, Event } from '@/types'
 
-const HomeTab: React.FC = () => {
-  // Données fictives pour les signalements récents
-  const recentReports: Signalement[] = [
+interface HomeTabProps {
+  reports?: Signalement[];
+  onReportClick?: (report: Signalement) => void;
+}
+
+const HomeTab: React.FC<HomeTabProps> = ({ reports, onReportClick }) => {
+  // Si aucun signalement n'est fourni, utiliser des données fictives
+  const recentReports: Signalement[] = reports || [
     {
       id: 1,
       type: 'Déversement de carburant',
@@ -68,10 +74,46 @@ const HomeTab: React.FC = () => {
     }
   }
   
+  // Animation variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: { 
+      opacity: 1,
+      transition: { 
+        when: "beforeChildren",
+        staggerChildren: 0.1
+      }
+    }
+  };
+  
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: { type: "spring", stiffness: 300, damping: 24 }
+    }
+  };
+  
+  // Handler pour cliquer sur un signalement
+  const handleReportClick = (report: Signalement) => {
+    if (onReportClick) {
+      onReportClick(report);
+    }
+  };
+  
   return (
-    <div className="py-4 px-4">
-      {/* Section impact collectif */}
-      <section className="mb-6">
+    <motion.div 
+      className="py-4 px-4 space-y-6"
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+    >
+      {/* Section impact collectif avec animation */}
+      <motion.section 
+        className="mb-2"
+        variants={itemVariants}
+      >
         <h2 className="text-xl font-bold mb-3">Impact collectif</h2>
         <div className="bg-white rounded-xl shadow-sm p-4">
           <div className="grid grid-cols-3 gap-3">
@@ -89,10 +131,13 @@ const HomeTab: React.FC = () => {
             </div>
           </div>
         </div>
-      </section>
+      </motion.section>
       
-      {/* Section signalements récents */}
-      <section className="mb-6">
+      {/* Section signalements récents avec animation */}
+      <motion.section 
+        className="mb-2"
+        variants={itemVariants}
+      >
         <div className="flex justify-between items-center mb-3">
           <h2 className="text-xl font-bold">Signalements récents</h2>
           <button className="text-blue-600 text-sm">Voir tous</button>
@@ -100,7 +145,14 @@ const HomeTab: React.FC = () => {
         
         <div className="space-y-3">
           {recentReports.map(report => (
-            <div key={report.id} className="bg-white rounded-xl shadow-sm p-3 flex items-center card-hover">
+            <motion.div 
+              key={report.id} 
+              className="bg-white rounded-xl shadow-sm p-3 flex items-center cursor-pointer transform hover:translate-x-1 transition-transform"
+              variants={itemVariants}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => handleReportClick(report)}
+            >
               <img 
                 src={report.imageUrl} 
                 alt={report.type} 
@@ -114,13 +166,15 @@ const HomeTab: React.FC = () => {
               <div className={`${getStatusColor(report.status)} text-white text-xs py-1 px-2 rounded-full`}>
                 {report.status}
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
-      </section>
+      </motion.section>
       
-      {/* Section événements à venir */}
-      <section>
+      {/* Section événements à venir avec animation */}
+      <motion.section
+        variants={itemVariants}
+      >
         <div className="flex justify-between items-center mb-3">
           <h2 className="text-xl font-bold">Événements à venir</h2>
           <button className="text-blue-600 text-sm">Voir tous</button>
@@ -128,7 +182,13 @@ const HomeTab: React.FC = () => {
         
         <div className="space-y-3">
           {upcomingEvents.map(event => (
-            <div key={event.id} className="bg-white rounded-xl shadow-sm p-3 flex card-hover">
+            <motion.div 
+              key={event.id} 
+              className="bg-white rounded-xl shadow-sm p-3 flex"
+              variants={itemVariants}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+            >
               <div className="flex flex-col items-center justify-center bg-blue-50 rounded-lg p-2 mr-3 w-16">
                 <div className="text-sm font-bold text-blue-600">{event.month}</div>
                 <div className="text-xl font-bold">{event.day}</div>
@@ -138,21 +198,25 @@ const HomeTab: React.FC = () => {
                 <div className="text-sm text-gray-600">{event.location}</div>
                 <div className="mt-1 flex items-center">
                   <div className="bg-gray-200 h-2 flex-1 rounded-full overflow-hidden">
-                    <div 
+                    <motion.div 
                       className="bg-blue-600 h-full rounded-full"
-                      style={{ width: `${(event.participants / event.maxParticipants) * 100}%` }}
-                    ></div>
+                      initial={{ width: 0 }}
+                      animate={{ 
+                        width: `${(event.participants / event.maxParticipants) * 100}%` 
+                      }}
+                      transition={{ duration: 1, ease: "easeOut" }}
+                    ></motion.div>
                   </div>
                   <span className="text-xs text-gray-600 ml-2">
                     {event.participants}/{event.maxParticipants}
                   </span>
                 </div>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
-      </section>
-    </div>
+      </motion.section>
+    </motion.div>
   )
 }
 
