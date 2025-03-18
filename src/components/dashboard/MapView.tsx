@@ -29,7 +29,7 @@ const MapView: React.FC<MapViewProps> = ({ reports, center = [46.2276, 2.2137], 
   // Fonction pour déterminer l'icône en fonction du type de signalement
   const getMarkerIcon = (type: string) => {
     return new Icon({
-      iconUrl: '/assets/images/logo.png',
+      iconUrl: '@logo.png',
       iconSize: [30, 30],
       iconAnchor: [15, 15],
       popupAnchor: [0, -15]

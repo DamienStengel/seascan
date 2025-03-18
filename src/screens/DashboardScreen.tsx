@@ -7,7 +7,6 @@ import HomeTab from '@/components/dashboard/HomeTab'
 import MapTab from '@/components/dashboard/MapTab'
 import EventsTab from '@/components/dashboard/EventsTab'
 import ProfileTab from '@/components/dashboard/ProfileTab'
-import ReportButton from '@/components/dashboard/ReportButton'
 
 const DashboardScreen: React.FC = () => {
   const { state, setActiveTab, setSearchQuery } = useAppContext()
@@ -19,7 +18,7 @@ const DashboardScreen: React.FC = () => {
   }
   
   // Fonction pour afficher le modal de signalement
-  const handleReportClick = () => {
+  const handleAddReport = () => {
     setShowReportModal(true)
   }
   
@@ -47,13 +46,11 @@ const DashboardScreen: React.FC = () => {
         </Routes>
       </main>
       
-      {/* Bouton de signalement flottant */}
-      <ReportButton onClick={handleReportClick} />
-      
-      {/* Navigation du bas */}
+      {/* Navigation du bas avec bouton d'ajout */}
       <BottomNavigation 
         activeTab={state.activeTab} 
         onTabChange={handleTabChange} 
+        onAddReport={handleAddReport}
       />
       
       {/* Modal de signalement (affiché conditionnellement) */}
