@@ -1,14 +1,15 @@
 import React from 'react'
 import { motion } from 'framer-motion'
-import { Signalement } from '@/types'
+import { Signalement, Event } from '@/types'
 import MapView from './MapView'
 
 interface MapTabProps {
   reports?: Signalement[];
+  events?: Event[];
   onReportClick?: (report: Signalement) => void;
 }
 
-const MapTab: React.FC<MapTabProps> = ({ reports = [], onReportClick }) => {
+const MapTab: React.FC<MapTabProps> = ({ reports = [], events = [], onReportClick }) => {
   // Animation variants
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -28,6 +29,7 @@ const MapTab: React.FC<MapTabProps> = ({ reports = [], onReportClick }) => {
       <div className="flex-1 relative">
         <MapView 
           reports={reports} 
+          events={events}
           onReportClick={onReportClick}
           center={[46.603354, 1.888334]} // Centre approximatif de la France
           zoom={6}

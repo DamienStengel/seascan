@@ -57,6 +57,8 @@ export interface Event {
   date?: Date
   organizer?: string
   imageUrl?: string
+  latitude?: number
+  longitude?: number
 }
 
 // Type pour les slides du carrousel

@@ -51,14 +51,14 @@ const Header: React.FC<HeaderProps> = ({
 
       {!showSearch && (
         <div className="flex items-center space-x-2 flex-1">
-          <img src="@logo.png" alt="OcéaPulse" className="h-8 w-8" />
+          <img src="/src/assets/images/logo.png" alt="OcéaPulse" className="h-8 w-8" />
           <h1 className="text-xl font-semibold">OcéaPulse</h1>
         </div>
       )}
 
       {showSearch && (
         <div className="flex items-center flex-1">
-          <img src="@logo.png" alt="OcéaPulse" className="h-8 w-8 mr-2" />
+          <img src="/src/assets/images/logo.png" alt="OcéaPulse" className="h-8 w-8 mr-2" />
           <div className="relative flex-1">
             <input
               type="text"

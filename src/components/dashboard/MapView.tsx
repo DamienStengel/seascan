@@ -2,11 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import { Icon, LatLngExpression, LatLngBounds } from 'leaflet';
 import { motion } from 'framer-motion';
-import { Signalement } from '@/types';
+import { Signalement, Event } from '@/types';
 import 'leaflet/dist/leaflet.css';
 
 interface MapViewProps {
   reports: Signalement[];
+  events?: Event[];
   center?: [number, number];
   zoom?: number;
   onReportClick?: (report: Signalement) => void;
@@ -22,21 +23,22 @@ const SetViewOnChange = ({ center, zoom }: { center: LatLngExpression, zoom: num
 };
 
 // Composant de carte pour visualiser les signalements
-const MapView: React.FC<MapViewProps> = ({ reports, center = [46.2276, 2.2137], zoom = 5, onReportClick }) => {
+const MapView: React.FC<MapViewProps> = ({ reports, events = [], center = [46.2276, 2.2137], zoom = 5, onReportClick }) => {
   const [selectedReport, setSelectedReport] = useState<Signalement | null>(null);
   const [mapReady, setMapReady] = useState(false);
   
   // Fonction pour déterminer l'icône en fonction du type de signalement
-  const getMarkerIcon = (type: string) => {
+  const getMarkerIcon = (type: string, isEvent = false) => {
     return new Icon({
-      iconUrl: '@logo.png',
-      iconSize: [30, 30],
-      iconAnchor: [15, 15],
-      popupAnchor: [0, -15]
+      iconUrl: '/src/assets/images/logo.png',
+      iconSize: isEvent ? [35, 35] : [30, 30],
+      iconAnchor: isEvent ? [17.5, 17.5] : [15, 15],
+      popupAnchor: [0, -15],
+      className: isEvent ? 'event-marker' : 'report-marker'
     });
   };
   
-  // Traiter les coordonnées pour les marqueurs
+  // Traiter les coordonnées pour les marqueurs de signalements
   const reportMarkers = reports.map(report => {
     // Utiliser les coordonnées si disponibles, sinon générer aléatoirement autour du centre
     const hasCoordinates = report.latitude && report.longitude;
@@ -49,135 +51,126 @@ const MapView: React.FC<MapViewProps> = ({ reports, center = [46.2276, 2.2137], 
     
     return { ...report, position };
   });
+
+  // Traiter les coordonnées pour les marqueurs d'événements
+  const eventMarkers = events.map(event => {
+    // Utiliser les coordonnées si disponibles, sinon générer aléatoirement autour du centre
+    const hasCoordinates = event.latitude && event.longitude;
+    const position: [number, number] = hasCoordinates
+      ? [event.latitude!, event.longitude!]
+      : [
+          center[0] + (Math.random() - 0.5) * 2,
+          center[1] + (Math.random() - 0.5) * 2
+        ];
+    
+    return { ...event, position };
+  });
   
-  // Fonction pour déterminer la couleur du statut
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'Très urgent':
-        return 'bg-red-500';
-      case 'Urgent':
-        return 'bg-orange-500';
-      case 'En cours':
-        return 'bg-blue-500';
-      case 'Résolu':
-        return 'bg-green-500';
-      default:
-        return 'bg-gray-500';
-    }
-  };
-  
-  // Animation de l'apparition de la carte
-  const containerVariants = {
+  // Animation variants
+  const mapVariants = {
     hidden: { opacity: 0 },
     visible: { 
       opacity: 1,
-      transition: { duration: 0.5 }
+      transition: { duration: 0.8 }
     }
   };
+
+  // Effet pour simuler le chargement de la carte
+  useEffect(() => {
+    const timer = setTimeout(() => setMapReady(true), 500);
+    return () => clearTimeout(timer);
+  }, []);
   
+  if (!mapReady) {
+    return (
+      <div className="flex items-center justify-center h-full bg-blue-50">
+        <motion.div
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.5 }}
+          className="text-blue-500 text-center"
+        >
+          <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="font-medium">Chargement de la carte...</p>
+        </motion.div>
+      </div>
+    );
+  }
+
   return (
     <motion.div
-      className="w-full h-full relative"
-      variants={containerVariants}
+      className="h-full w-full relative"
+      variants={mapVariants}
       initial="hidden"
-      animate={mapReady ? "visible" : "hidden"}
+      animate="visible"
     >
-      {!mapReady && (
-        <div className="absolute inset-0 flex items-center justify-center bg-gray-100 z-10">
-          <div className="text-center">
-            <svg className="animate-spin w-10 h-10 mx-auto mb-3 text-blue-600" viewBox="0 0 24 24">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"></circle>
-              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
-            <div className="text-gray-600 font-medium">Chargement de la carte...</div>
-          </div>
-        </div>
-      )}
-      
       <MapContainer
         center={center}
         zoom={zoom}
         style={{ height: '100%', width: '100%' }}
-        whenReady={() => setMapReady(true)}
+        zoomControl={false}
+        attributionControl={false}
       >
         <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
-        
         <SetViewOnChange center={center} zoom={zoom} />
         
+        {/* Marqueurs pour les signalements */}
         {reportMarkers.map((report) => (
           <Marker
-            key={report.id}
+            key={`report-${report.id}`}
             position={report.position}
             icon={getMarkerIcon(report.type)}
             eventHandlers={{
               click: () => {
-                setSelectedReport(report);
-                // Si une fonction onReportClick est fournie, appeler cette fonction
                 if (onReportClick) {
                   onReportClick(report);
+                } else {
+                  setSelectedReport(report);
                 }
               }
             }}
           >
-            <Popup>
-              <div className="p-1">
-                <div className="font-bold text-sm mb-1">{report.type}</div>
-                <div className="flex items-center justify-between text-xs">
-                  <span>{report.location}</span>
-                  <span className={`${getStatusColor(report.status)} text-white px-2 py-0.5 rounded-full ml-2`}>
-                    {report.status}
-                  </span>
+            {!onReportClick && (
+              <Popup>
+                <div className="p-2">
+                  <h3 className="font-bold">{report.type}</h3>
+                  <p className="text-sm">{report.description ? report.description.substring(0, 100) + '...' : 'Aucune description'}</p>
+                  <p className="text-xs text-gray-500 mt-1">
+                    Signalé le {report.createdAt ? new Date(report.createdAt).toLocaleDateString() : 'date inconnue'}
+                  </p>
                 </div>
+              </Popup>
+            )}
+          </Marker>
+        ))}
+        
+        {/* Marqueurs pour les événements */}
+        {eventMarkers.map((event) => (
+          <Marker
+            key={`event-${event.id}`}
+            position={event.position}
+            icon={getMarkerIcon(event.title, true)}
+          >
+            <Popup>
+              <div className="p-2">
+                <h3 className="font-bold">{event.title}</h3>
+                {event.description && <p className="text-sm">{event.description.substring(0, 100)}...</p>}
+                <p className="text-xs mt-1">
+                  {event.day} {event.month} · {event.participants}/{event.maxParticipants} participants
+                </p>
+                {event.organizer && (
+                  <p className="text-xs text-gray-500 mt-1">
+                    Organisé par {event.organizer}
+                  </p>
+                )}
               </div>
             </Popup>
           </Marker>
         ))}
       </MapContainer>
-      
-      {/* Légende */}
-      <div className="absolute bottom-4 left-4 bg-white bg-opacity-90 p-2 rounded-lg shadow-md z-[1000]">
-        <div className="text-sm font-semibold mb-1">Types de pollution</div>
-        <div className="grid grid-cols-1 gap-1">
-          <div className="flex items-center">
-            <div className="w-3 h-3 rounded-full bg-red-500 mr-2"></div>
-            <span className="text-xs">Déversement de carburant</span>
-          </div>
-          <div className="flex items-center">
-            <div className="w-3 h-3 rounded-full bg-blue-500 mr-2"></div>
-            <span className="text-xs">Déchets plastiques</span>
-          </div>
-          <div className="flex items-center">
-            <div className="w-3 h-3 rounded-full bg-green-500 mr-2"></div>
-            <span className="text-xs">Filets abandonnés</span>
-          </div>
-        </div>
-      </div>
-      
-      {/* Contrôles de filtrage */}
-      <div className="absolute top-4 right-4 bg-white bg-opacity-90 p-2 rounded-lg shadow-md z-[1000]">
-        <div className="text-sm font-semibold mb-1">Filtres</div>
-        <div className="grid grid-cols-2 gap-1">
-          <label className="flex items-center text-xs">
-            <input type="checkbox" className="mr-1" defaultChecked />
-            Très urgent
-          </label>
-          <label className="flex items-center text-xs">
-            <input type="checkbox" className="mr-1" defaultChecked />
-            Urgent
-          </label>
-          <label className="flex items-center text-xs">
-            <input type="checkbox" className="mr-1" defaultChecked />
-            En cours
-          </label>
-          <label className="flex items-center text-xs">
-            <input type="checkbox" className="mr-1" defaultChecked />
-            Résolu
-          </label>
-        </div>
-      </div>
     </motion.div>
   );
 };

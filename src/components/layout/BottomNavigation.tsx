@@ -98,9 +98,9 @@ const BottomNavigation: React.FC<BottomNavigationProps> = ({ activeTab, onTabCha
         ))}
         
         {/* Bouton d'ajout de signalement */}
-        <div className="flex-1 flex justify-center -mt-5 relative z-20">
+        <div className="flex-1 flex justify-center items-center relative z-20">
           <motion.button
-            className="bg-gradient-to-r from-blue-600 to-teal-500 w-14 h-14 rounded-full shadow-lg flex items-center justify-center text-white"
+            className="bg-gradient-to-r from-blue-600 to-teal-500 w-14 h-14 rounded-full shadow-lg flex items-center justify-center text-white transform -translate-y-6"
             onClick={onAddReport}
             variants={buttonVariants}
             initial="initial"

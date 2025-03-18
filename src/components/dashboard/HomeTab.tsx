@@ -16,7 +16,7 @@ const HomeTab: React.FC<HomeTabProps> = ({ reports, onReportClick }) => {
       location: 'Plage de la Salie',
       time: 'Il y a 2 heures',
       status: 'Très urgent',
-      imageUrl: '@logo.png'
+      imageUrl: '/src/assets/images/logo.png'
     },
     {
       id: 2,
@@ -24,7 +24,7 @@ const HomeTab: React.FC<HomeTabProps> = ({ reports, onReportClick }) => {
       location: 'Côte des Basques',
       time: 'Il y a 5 heures',
       status: 'Urgent',
-      imageUrl: '@logo.png'
+      imageUrl: '/src/assets/images/logo.png'
     },
     {
       id: 3,
@@ -32,7 +32,7 @@ const HomeTab: React.FC<HomeTabProps> = ({ reports, onReportClick }) => {
       location: 'Port de Capbreton',
       time: 'Hier',
       status: 'En cours',
-      imageUrl: '@logo.png'
+      imageUrl: '/src/assets/images/logo.png'
     }
   ]
   

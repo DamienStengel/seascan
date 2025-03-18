@@ -17,14 +17,14 @@ const DetailedReport: React.FC<DetailedReportProps> = ({ report, onClose }) => {
       firstName: 'Julie',
       lastName: 'Dupont',
       email: 'julie@example.com',
-      profilePicture: '/assets/images/logo.png'
+      profilePicture: '/src/assets/images/logo.png'
     },
     {
       id: '2',
       firstName: 'Thomas',
       lastName: 'Martin',
       email: 'thomas@example.com',
-      profilePicture: '/assets/images/logo.png'
+      profilePicture: '/src/assets/images/logo.png'
     }
   ];
   
@@ -70,7 +70,7 @@ const DetailedReport: React.FC<DetailedReportProps> = ({ report, onClose }) => {
         {/* Header avec image principale */}
         <div className="relative h-48">
           <img
-            src={report.imageUrl || '@logo.png'}
+            src={report.imageUrl || '/src/assets/images/logo.png'}
             alt={report.type}
             className="w-full h-full object-cover"
           />
@@ -239,7 +239,7 @@ const DetailedReport: React.FC<DetailedReportProps> = ({ report, onClose }) => {
                 {/* Images principales */}
                 <div className="aspect-w-16 aspect-h-9 bg-gray-200 rounded-lg overflow-hidden">
                   <img 
-                    src={report.imageUrl || '@logo.png'} 
+                    src={report.imageUrl || '/src/assets/images/logo.png'} 
                     alt="Photo principale" 
                     className="w-full h-full object-cover"
                   />
@@ -250,7 +250,7 @@ const DetailedReport: React.FC<DetailedReportProps> = ({ report, onClose }) => {
                   {[1, 2, 3, 4, 5].map(index => (
                     <div key={index} className="aspect-w-1 aspect-h-1 bg-gray-200 rounded-lg overflow-hidden">
                       <img 
-                        src="@logo.png" 
+                        src="/src/assets/images/logo.png" 
                         alt={`Photo ${index}`} 
                         className="w-full h-full object-cover"
                       />
