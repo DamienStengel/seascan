@@ -1,6 +1,31 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Camera, Location, Image, Category, CameraType } from '@/types';
+import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
+import { Icon, Map, LeafletMouseEvent } from 'leaflet';
+import 'leaflet/dist/leaflet.css';
+
+// Composant pour ajouter un gestionnaire de clic à la carte
+const MapClickHandler = ({ onMapClick }: { onMapClick: (lat: number, lng: number) => void }) => {
+  const map = useMap();
+  
+  useEffect(() => {
+    if (!map) return;
+    
+    const handleClick = (e: LeafletMouseEvent) => {
+      const { lat, lng } = e.latlng;
+      onMapClick(lat, lng);
+    };
+    
+    map.on('click', handleClick);
+    
+    return () => {
+      map.off('click', handleClick);
+    };
+  }, [map, onMapClick]);
+  
+  return null;
+};
 
 interface ReportFormProps {
   onClose: () => void;
@@ -275,37 +300,59 @@ const ReportForm: React.FC<ReportFormProps> = ({ onClose, onSubmit }) => {
               <h2 className="text-xl font-medium mb-4">Où se trouve la pollution ?</h2>
               
               <div className="w-full h-64 bg-gray-200 rounded-lg mb-6 relative overflow-hidden" style={{ zIndex: 20 }}>
-                {/* Simuler une carte */}
-                <div className="w-full h-full bg-blue-100">
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <img 
-                      src="/src/assets/images/logo.png" 
-                      alt="Carte" 
-                      className="w-full h-full object-cover opacity-10"
-                    />
-                    <div className="absolute inset-0 flex items-center justify-center text-gray-500">
-                      <p>Carte interactive</p>
-                    </div>
-                  </div>
-                  {location.coordinates && (
-                    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                      <svg className="w-8 h-8 text-red-600" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
-                      </svg>
-                    </div>
-                  )}
-                  <motion.button 
-                    onClick={utiliserPositionActuelle}
-                    className="absolute top-3 right-3 bg-white rounded-full p-2 shadow-md z-30"
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
+                {/* Carte interactive réelle */}
+                <div className="w-full h-full">
+                  {/* Importation de la carte Leaflet */}
+                  <MapContainer
+                    center={location.coordinates ? [location.coordinates.lat, location.coordinates.lng] : [46.227, 2.213]}
+                    zoom={location.coordinates ? 13 : 5}
+                    style={{ height: '100%', width: '100%' }}
+                    zoomControl={true}
+                    attributionControl={false}
+                    className="z-10"
                   >
-                    <svg className="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
-                  </motion.button>
+                    <TileLayer
+                      url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                      attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                    />
+                    {location.coordinates && (
+                      <Marker
+                        position={[location.coordinates.lat, location.coordinates.lng]}
+                        icon={new Icon({
+                          iconUrl: '/src/assets/images/pollution-marker.png',
+                          iconSize: [32, 32],
+                          iconAnchor: [16, 32],
+                          popupAnchor: [0, -30]
+                        })}
+                      >
+                        <Popup>
+                          Position du signalement
+                        </Popup>
+                      </Marker>
+                    )}
+                    <MapClickHandler 
+                      onMapClick={(lat, lng) => {
+                        setLocation({
+                          ...location,
+                          coordinates: { lat, lng },
+                          address: `Lat: ${lat.toFixed(4)}, Long: ${lng.toFixed(4)}`,
+                          loading: false
+                        });
+                      }} 
+                    />
+                  </MapContainer>
                 </div>
+                <motion.button 
+                  onClick={utiliserPositionActuelle}
+                  className="absolute top-3 right-3 bg-white rounded-full p-2 shadow-md z-30"
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                >
+                  <svg className="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                </motion.button>
               </div>
               
               <div className="mb-6">

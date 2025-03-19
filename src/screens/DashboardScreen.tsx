@@ -78,6 +78,90 @@ const DashboardScreen: React.FC = () => {
       latitude: 43.5219,
       longitude: 4.1369,
       categories: ['Plastique', 'Déchets divers']
+    },
+    {
+      id: 6,
+      type: 'Algues toxiques',
+      location: 'Baie de Saint-Brieuc',
+      time: 'Il y a 2 jours',
+      status: 'Urgent',
+      imageUrl: '/src/assets/images/logo.png',
+      description: 'Prolifération d\'algues vertes toxiques. Odeur nauséabonde et risques pour la santé. Zone à éviter absolument.',
+      latitude: 48.5333,
+      longitude: -2.7500,
+      categories: ['Biologique', 'Toxique']
+    },
+    {
+      id: 7,
+      type: 'Déchets industriels',
+      location: 'Étang de Berre',
+      time: 'Il y a 4 jours',
+      status: 'En cours',
+      imageUrl: '/src/assets/images/logo.png',
+      description: 'Rejets industriels visibles à la surface de l\'eau. Forte odeur chimique et mousse suspecte.',
+      latitude: 43.4453,
+      longitude: 5.1033,
+      categories: ['Industriel', 'Chimique']
+    },
+    {
+      id: 8,
+      type: 'Microplastiques',
+      location: 'Plage de Porticcio',
+      time: 'Il y a 1 semaine',
+      status: 'En cours',
+      imageUrl: '/src/assets/images/logo.png',
+      description: 'Concentration importante de microplastiques sur la plage. Petites particules visibles dans le sable sur plusieurs mètres.',
+      latitude: 41.8836,
+      longitude: 8.7946,
+      categories: ['Plastique', 'Microparticules']
+    },
+    {
+      id: 9,
+      type: 'Nappes d\'hydrocarbures',
+      location: 'Côte Bleue',
+      time: 'Il y a 3 jours',
+      status: 'Très urgent',
+      imageUrl: '/src/assets/images/logo.png',
+      description: 'Nappes d\'hydrocarbures observées près de la côte. Probablement dues à un dégazage illégal. Plusieurs oiseaux mazoutés signalés.',
+      latitude: 43.3349,
+      longitude: 5.1842,
+      categories: ['Hydrocarbures', 'Toxique']
+    },
+    {
+      id: 10,
+      type: 'Déchets médicaux',
+      location: 'Plage de la Pointe Rouge',
+      time: 'Hier',
+      status: 'Très urgent',
+      imageUrl: '/src/assets/images/logo.png',
+      description: 'Déchets médicaux échoués sur la plage (seringues, compresses, etc). Zone dangereuse nécessitant une intervention rapide.',
+      latitude: 43.2467,
+      longitude: 5.3699,
+      categories: ['Médical', 'Dangereux']
+    },
+    {
+      id: 11,
+      type: 'Pollution sonore',
+      location: 'Baie de Calvi',
+      time: 'Il y a 5 jours',
+      status: 'En cours',
+      imageUrl: '/src/assets/images/logo.png',
+      description: 'Travaux maritimes générant une forte pollution sonore. Impact important sur les cétacés dans la zone.',
+      latitude: 42.5667,
+      longitude: 8.7667,
+      categories: ['Sonore', 'Industriel']
+    },
+    {
+      id: 12,
+      type: 'Contamination fécale',
+      location: 'Plage du Prophète',
+      time: 'Il y a 8 heures',
+      status: 'Urgent',
+      imageUrl: '/src/assets/images/logo.png',
+      description: 'Contamination de l\'eau par des bactéries fécales. Baignade fortement déconseillée. Forte odeur et couleur suspecte de l\'eau.',
+      latitude: 43.2725,
+      longitude: 5.3661,
+      categories: ['Biologique', 'Sanitaire']
     }
   ];
   
@@ -127,6 +211,81 @@ const DashboardScreen: React.FC = () => {
       organizer: 'OcéaPulse Team',
       latitude: 44.6611,
       longitude: -1.1681
+    },
+    {
+      id: 4,
+      title: 'Nettoyage sous-marin',
+      location: 'Calanque de Sormiou, Marseille',
+      description: 'Opération de nettoyage sous-marin pour plongeurs certifiés. Venez nous aider à retirer les déchets des fonds marins.',
+      month: 'JUL',
+      day: '12',
+      participants: 6,
+      maxParticipants: 12,
+      date: new Date('2023-07-12T08:00:00'),
+      imageUrl: '/src/assets/images/logo.png',
+      organizer: 'Club de Plongée Marseillais',
+      latitude: 43.2123,
+      longitude: 5.4205
+    },
+    {
+      id: 5,
+      title: 'Ramassage de déchets',
+      location: 'Plage du Prado, Marseille',
+      description: 'Collecte de déchets sur la plage et ses environs. Événement familial, adapté aux enfants accompagnés.',
+      month: 'JUN',
+      day: '25',
+      participants: 24,
+      maxParticipants: 40,
+      date: new Date('2023-06-25T09:30:00'),
+      imageUrl: '/src/assets/images/logo.png',
+      organizer: 'Marseille Écologie',
+      latitude: 43.2585,
+      longitude: 5.3728
+    },
+    {
+      id: 6,
+      title: 'Atelier recyclage créatif',
+      location: 'Centre culturel de Lacanau',
+      description: 'Transformez les déchets plastiques marins en objets d\'art. Atelier créatif pour tous niveaux.',
+      month: 'JUL',
+      day: '08',
+      participants: 13,
+      maxParticipants: 25,
+      date: new Date('2023-07-08T14:00:00'),
+      imageUrl: '/src/assets/images/logo.png',
+      organizer: 'Art & Océan',
+      latitude: 44.9772,
+      longitude: -1.0795
+    },
+    {
+      id: 7,
+      title: 'Observation des cétacés',
+      location: 'Port de Saint-Jean-Cap-Ferrat',
+      description: 'Sortie en mer pour observer les dauphins et apprendre sur leur protection. Réservation obligatoire.',
+      month: 'JUL',
+      day: '18',
+      participants: 8,
+      maxParticipants: 15,
+      date: new Date('2023-07-18T07:30:00'),
+      imageUrl: '/src/assets/images/logo.png',
+      organizer: 'SOS Dauphins',
+      latitude: 43.6835,
+      longitude: 7.3328
+    },
+    {
+      id: 8,
+      title: 'Recensement biodiversité',
+      location: 'Réserve de Scandola, Corse',
+      description: 'Participez au recensement annuel de la biodiversité marine. Formation fournie aux participants.',
+      month: 'JUL',
+      day: '20',
+      participants: 4,
+      maxParticipants: 8,
+      date: new Date('2023-07-20T08:00:00'),
+      imageUrl: '/src/assets/images/logo.png',
+      organizer: 'Institut Marin Corse',
+      latitude: 42.3584,
+      longitude: 8.5508
     }
   ];
   

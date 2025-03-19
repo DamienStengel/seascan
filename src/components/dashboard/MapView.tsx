@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, useMap, LayerGroup } from 'react-leaflet';
 import { Icon, LatLngExpression, LatLngBounds } from 'leaflet';
 import { motion } from 'framer-motion';
 import { Signalement, Event } from '@/types';
@@ -29,13 +29,37 @@ const MapView: React.FC<MapViewProps> = ({ reports, events = [], center = [46.22
   
   // Fonction pour déterminer l'icône en fonction du type de signalement
   const getMarkerIcon = (type: string, isEvent = false) => {
-    return new Icon({
-      iconUrl: '/src/assets/images/logo.png',
-      iconSize: isEvent ? [35, 35] : [30, 30],
-      iconAnchor: isEvent ? [17.5, 17.5] : [15, 15],
-      popupAnchor: [0, -15],
-      className: isEvent ? 'event-marker' : 'report-marker'
-    });
+    if (isEvent) {
+      // Icône pour les événements (verte)
+      return new Icon({
+        iconUrl: '/src/assets/images/event-marker.png',
+        iconSize: [38, 38],
+        iconAnchor: [19, 38],
+        popupAnchor: [0, -35],
+        className: 'event-marker'
+      });
+    } else {
+      // Utiliser une couleur différente selon le type de signalement
+      let color = 'text-red-600';
+      
+      if (type.toLowerCase().includes('plastique') || type.toLowerCase().includes('déchet')) {
+        color = 'text-orange-600';
+      } else if (type.toLowerCase().includes('hydrocarbure') || type.toLowerCase().includes('chimique')) {
+        color = 'text-red-600';
+      } else if (type.toLowerCase().includes('filet') || type.toLowerCase().includes('pêche')) {
+        color = 'text-yellow-600';
+      } else if (type.toLowerCase().includes('algue') || type.toLowerCase().includes('biologique')) {
+        color = 'text-green-700';
+      }
+      
+      return new Icon({
+        iconUrl: '/src/assets/images/pollution-marker.png',
+        iconSize: [32, 32],
+        iconAnchor: [16, 32],
+        popupAnchor: [0, -30],
+        className: `report-marker ${color}`
+      });
+    }
   };
   
   // Traiter les coordonnées pour les marqueurs de signalements
@@ -105,6 +129,18 @@ const MapView: React.FC<MapViewProps> = ({ reports, events = [], center = [46.22
       animate="visible"
       style={{ zIndex: 10 }}
     >
+      {/* Légende de la carte */}
+      <div className="absolute bottom-4 right-4 z-30 bg-white p-3 rounded-lg shadow-md text-sm">
+        <div className="flex items-center mb-2">
+          <div className="w-4 h-4 bg-red-500 rounded-full mr-2"></div>
+          <span>Signalements</span>
+        </div>
+        <div className="flex items-center">
+          <div className="w-4 h-4 bg-green-600 rounded-full mr-2"></div>
+          <span>Événements</span>
+        </div>
+      </div>
+
       <MapContainer
         center={center}
         zoom={zoom}
@@ -119,59 +155,63 @@ const MapView: React.FC<MapViewProps> = ({ reports, events = [], center = [46.22
         />
         <SetViewOnChange center={center} zoom={zoom} />
         
-        {/* Marqueurs pour les signalements */}
-        {reportMarkers.map((report) => (
-          <Marker
-            key={`report-${report.id}`}
-            position={report.position}
-            icon={getMarkerIcon(report.type)}
-            eventHandlers={{
-              click: () => {
-                if (onReportClick) {
-                  onReportClick(report);
-                } else {
-                  setSelectedReport(report);
+        {/* Groupe de couche pour les signalements */}
+        <LayerGroup>
+          {reportMarkers.map((report) => (
+            <Marker
+              key={`report-${report.id}`}
+              position={report.position}
+              icon={getMarkerIcon(report.type)}
+              eventHandlers={{
+                click: () => {
+                  if (onReportClick) {
+                    onReportClick(report);
+                  } else {
+                    setSelectedReport(report);
+                  }
                 }
-              }
-            }}
-          >
-            {!onReportClick && (
+              }}
+            >
+              {!onReportClick && (
+                <Popup>
+                  <div className="p-2">
+                    <h3 className="font-bold">{report.type}</h3>
+                    <p className="text-sm">{report.description ? report.description.substring(0, 100) + '...' : 'Aucune description'}</p>
+                    <p className="text-xs text-gray-500 mt-1">
+                      Signalé le {report.createdAt ? new Date(report.createdAt).toLocaleDateString() : 'date inconnue'}
+                    </p>
+                  </div>
+                </Popup>
+              )}
+            </Marker>
+          ))}
+        </LayerGroup>
+        
+        {/* Groupe de couche pour les événements */}
+        <LayerGroup>
+          {eventMarkers.map((event) => (
+            <Marker
+              key={`event-${event.id}`}
+              position={event.position}
+              icon={getMarkerIcon(event.title, true)}
+            >
               <Popup>
                 <div className="p-2">
-                  <h3 className="font-bold">{report.type}</h3>
-                  <p className="text-sm">{report.description ? report.description.substring(0, 100) + '...' : 'Aucune description'}</p>
-                  <p className="text-xs text-gray-500 mt-1">
-                    Signalé le {report.createdAt ? new Date(report.createdAt).toLocaleDateString() : 'date inconnue'}
+                  <h3 className="font-bold">{event.title}</h3>
+                  {event.description && <p className="text-sm">{event.description.substring(0, 100)}...</p>}
+                  <p className="text-xs mt-1">
+                    {event.day} {event.month} · {event.participants}/{event.maxParticipants} participants
                   </p>
+                  {event.organizer && (
+                    <p className="text-xs text-gray-500 mt-1">
+                      Organisé par {event.organizer}
+                    </p>
+                  )}
                 </div>
               </Popup>
-            )}
-          </Marker>
-        ))}
-        
-        {/* Marqueurs pour les événements */}
-        {eventMarkers.map((event) => (
-          <Marker
-            key={`event-${event.id}`}
-            position={event.position}
-            icon={getMarkerIcon(event.title, true)}
-          >
-            <Popup>
-              <div className="p-2">
-                <h3 className="font-bold">{event.title}</h3>
-                {event.description && <p className="text-sm">{event.description.substring(0, 100)}...</p>}
-                <p className="text-xs mt-1">
-                  {event.day} {event.month} · {event.participants}/{event.maxParticipants} participants
-                </p>
-                {event.organizer && (
-                  <p className="text-xs text-gray-500 mt-1">
-                    Organisé par {event.organizer}
-                  </p>
-                )}
-              </div>
-            </Popup>
-          </Marker>
-        ))}
+            </Marker>
+          ))}
+        </LayerGroup>
       </MapContainer>
     </motion.div>
   );
