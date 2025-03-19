@@ -19,7 +19,7 @@ const HomeTab: React.FC<HomeTabProps> = ({ reports, onReportClick }) => {
       location: 'Plage de la Salie',
       time: 'Il y a 2 heures',
       status: 'Très urgent',
-      imageUrl: '/assets/images/logo.png'
+      imageUrl: '/assets/images/maree-noire.jpg'
     },
     {
       id: 2,
@@ -143,7 +143,7 @@ const HomeTab: React.FC<HomeTabProps> = ({ reports, onReportClick }) => {
   
   // Fonction pour naviguer vers la page des événements
   const handleViewAllEvents = () => {
-    navigate('/events');
+    navigate('/dashboard/events');
   };
   
   return (

@@ -23,7 +23,7 @@ const DashboardScreen: React.FC = () => {
   // Images disponibles pour les signalements
   const pollutionImages = [
     '/assets/images/plastique.jpg',
-    '/assets/images/marée-noire.jpg',
+    '/assets/images/maree-noire.jpg',
     '/assets/images/filet.jpg',
     '/assets/images/chimique.jpg'
   ];
