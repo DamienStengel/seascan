@@ -98,23 +98,23 @@ const BottomNavigation: React.FC<BottomNavigationProps> = ({ activeTab, onTabCha
         ))}
         
         {/* Bouton d'ajout de signalement */}
-        <div className="flex-1 flex justify-center items-center relative z-20">
+        <div className="flex-1 flex justify-center items-start relative">
           <motion.button
-            className="bg-gradient-to-r from-blue-600 to-teal-500 w-14 h-14 rounded-full shadow-lg flex items-center justify-center text-white absolute top-0 transform -translate-y-1/2"
-            onClick={onAddReport}
-            variants={buttonVariants}
-            initial="initial"
-            whileHover="hover"
-            whileTap="tap"
-            transition={{ type: "spring", stiffness: 400, damping: 17 }}
-            aria-label="Signaler"
+              className="bg-gradient-to-r from-blue-600 to-teal-500 w-14 h-14 rounded-full shadow-lg flex items-center justify-center text-white absolute -top-7"
+              onClick={onAddReport}
+              variants={buttonVariants}
+              initial="initial"
+              whileHover="hover"
+              whileTap="tap"
+              transition={{ type: "spring", stiffness: 400, damping: 17 }}
+              aria-label="Signaler"
           >
             <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path 
-                strokeLinecap="round" 
-                strokeLinejoin="round" 
-                strokeWidth={2} 
-                d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" 
+              <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
               />
             </svg>
           </motion.button>
