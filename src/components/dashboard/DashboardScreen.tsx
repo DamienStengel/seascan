@@ -27,11 +27,12 @@ const DashboardScreen: React.FC = () => {
       location: 'Plage de la Salie',
       time: 'Il y a 2 heures',
       status: 'Très urgent',
-      imageUrl: '/src/assets/images/logo.png',
+      imageUrl: '/src/assets/images/marée-noire.jpg',
       description: 'Déversement important de carburant observé près de la côte. Une nappe noire s\'étend sur environ 50 mètres. Risque majeur pour les oiseaux marins et la faune aquatique.',
       latitude: 44.6205,
       longitude: -1.1887,
-      categories: ['Toxique', 'Hydrocarbures']
+      categories: ['Toxique', 'Hydrocarbures'],
+      createdAt: new Date('2023-06-15T15:30:00')
     },
     {
       id: 2,
@@ -39,11 +40,12 @@ const DashboardScreen: React.FC = () => {
       location: 'Côte des Basques',
       time: 'Il y a 5 heures',
       status: 'Urgent',
-      imageUrl: '/src/assets/images/logo.png',
+      imageUrl: '/src/assets/images/plastique.jpg',
       description: 'Accumulation de déchets plastiques sur la plage, principalement des bouteilles et des emballages. Zone d\'environ 20m² très polluée.',
       latitude: 43.4789,
       longitude: -1.5686,
-      categories: ['Plastique', 'Déchets divers']
+      categories: ['Plastique', 'Déchets divers'],
+      createdAt: new Date('2023-06-15T12:15:00')
     },
     {
       id: 3,
@@ -51,11 +53,12 @@ const DashboardScreen: React.FC = () => {
       location: 'Port de Capbreton',
       time: 'Hier',
       status: 'En cours',
-      imageUrl: '/src/assets/images/logo.png',
+      imageUrl: '/src/assets/images/filet.jpg',
       description: 'Filets de pêche abandonnés ou perdus, emmêlés autour des rochers. Danger potentiel pour la faune marine, risque d\'enchevêtrement.',
       latitude: 43.6435,
       longitude: -1.4468,
-      categories: ['Matériel de pêche', 'Filets']
+      categories: ['Matériel de pêche', 'Filets'],
+      createdAt: new Date('2023-06-14T10:45:00')
     },
     {
       id: 4,
@@ -63,11 +66,12 @@ const DashboardScreen: React.FC = () => {
       location: 'Port de Marseille',
       time: 'Il y a 3 jours',
       status: 'En cours',
-      imageUrl: '/src/assets/images/logo.png',
+      imageUrl: '/src/assets/images/chimique.jpg',
       description: 'Traces de pollution chimique dans l\'eau, mousse blanchâtre et odeur caractéristique. Plusieurs poissons morts observés à proximité.',
       latitude: 43.2965,
       longitude: 5.3698,
-      categories: ['Chimique', 'Toxique']
+      categories: ['Chimique', 'Toxique'],
+      createdAt: new Date('2023-06-12T16:20:00')
     },
     {
       id: 5,
@@ -75,71 +79,103 @@ const DashboardScreen: React.FC = () => {
       location: 'Plage de l\'Espiguette',
       time: 'Il y a 1 jour',
       status: 'Urgent',
-      imageUrl: '/src/assets/images/logo.png',
+      imageUrl: '/src/assets/images/plastique.jpg',
       description: 'Grande quantité de déchets plastiques et autres matériaux rejetés par la mer suite à une tempête. Plusieurs centaines de mètres sont concernés.',
       latitude: 43.5219,
       longitude: 4.1369,
-      categories: ['Plastique', 'Déchets divers']
+      categories: ['Plastique', 'Déchets divers'],
+      createdAt: new Date('2023-06-14T09:10:00')
     },
     {
       id: 6,
-      type: 'Pollution sonore',
+      type: 'Algues toxiques',
       location: 'Baie de Saint-Brieuc',
       time: 'Il y a 2 jours',
-      status: 'En cours',
-      imageUrl: '/src/assets/images/logo.png',
-      description: 'Travaux maritimes générant une forte pollution sonore. Impact potentiel sur les mammifères marins dans la zone.',
-      latitude: 48.5833,
-      longitude: -2.85,
-      categories: ['Sonore', 'Industriel']
+      status: 'Urgent',
+      imageUrl: '/src/assets/images/chimique.jpg',
+      description: 'Prolifération d\'algues vertes toxiques. Odeur nauséabonde et risques pour la santé. Zone à éviter absolument.',
+      latitude: 48.5333,
+      longitude: -2.7500,
+      categories: ['Biologique', 'Toxique'],
+      createdAt: new Date('2023-06-13T11:30:00')
     },
     {
       id: 7,
-      type: 'Marée noire',
-      location: 'Côte d\'Azur',
-      time: 'Il y a 6 heures',
-      status: 'Très urgent',
-      imageUrl: '/src/assets/images/logo.png',
-      description: 'Petite marée noire détectée, probablement due à un dégazage sauvage. Urgence d\'intervention pour limiter les dégâts environnementaux.',
-      latitude: 43.7031,
-      longitude: 7.2661,
-      categories: ['Hydrocarbures', 'Toxique']
+      type: 'Déchets industriels',
+      location: 'Étang de Berre',
+      time: 'Il y a 4 jours',
+      status: 'En cours',
+      imageUrl: '/src/assets/images/chimique.jpg',
+      description: 'Rejets industriels visibles à la surface de l\'eau. Forte odeur chimique et mousse suspecte.',
+      latitude: 43.4453,
+      longitude: 5.1033,
+      categories: ['Industriel', 'Chimique'],
+      createdAt: new Date('2023-06-11T14:15:00')
     },
     {
       id: 8,
-      type: 'Algues invasives',
-      location: 'Côte Bretonne',
-      time: 'Il y a 4 jours',
-      status: 'Urgent',
-      imageUrl: '/src/assets/images/logo.png',
-      description: 'Prolifération importante d\'algues vertes sur la plage. Odeur nauséabonde et risques sanitaires potentiels.',
-      latitude: 48.6392,
-      longitude: -2.0122,
-      categories: ['Biologique', 'Eutrophisation']
+      type: 'Microplastiques',
+      location: 'Plage de Porticcio',
+      time: 'Il y a 1 semaine',
+      status: 'En cours',
+      imageUrl: '/src/assets/images/plastique.jpg',
+      description: 'Concentration importante de microplastiques sur la plage. Petites particules visibles dans le sable sur plusieurs mètres.',
+      latitude: 41.8836,
+      longitude: 8.7946,
+      categories: ['Plastique', 'Microparticules'],
+      createdAt: new Date('2023-06-08T10:00:00')
     },
     {
       id: 9,
-      type: 'Conteneur perdu',
-      location: 'Large de Dunkerque',
-      time: 'Il y a 1 semaine',
-      status: 'En cours',
-      imageUrl: '/src/assets/images/logo.png',
-      description: 'Conteneur de transport perdu en mer, contenant potentiellement des produits dangereux. Surveillance en cours.',
-      latitude: 51.0667,
-      longitude: 2.3833,
-      categories: ['Industriel', 'Transport']
+      type: 'Nappes d\'hydrocarbures',
+      location: 'Côte Bleue',
+      time: 'Il y a 3 jours',
+      status: 'Très urgent',
+      imageUrl: '/src/assets/images/marée-noire.jpg',
+      description: 'Nappes d\'hydrocarbures observées près de la côte. Probablement dues à un dégazage illégal. Plusieurs oiseaux mazoutés signalés.',
+      latitude: 43.3349,
+      longitude: 5.1842,
+      categories: ['Hydrocarbures', 'Toxique'],
+      createdAt: new Date('2023-06-12T09:45:00')
     },
     {
       id: 10,
-      type: 'Déchets de pêche',
-      location: 'Côte Vendéenne',
-      time: 'Il y a 3 jours',
+      type: 'Déchets médicaux',
+      location: 'Plage de la Pointe Rouge',
+      time: 'Hier',
+      status: 'Très urgent',
+      imageUrl: '/src/assets/images/plastique.jpg',
+      description: 'Déchets médicaux échoués sur la plage (seringues, compresses, etc). Zone dangereuse nécessitant une intervention rapide.',
+      latitude: 43.2467,
+      longitude: 5.3699,
+      categories: ['Médical', 'Dangereux'],
+      createdAt: new Date('2023-06-14T16:30:00')
+    },
+    {
+      id: 11,
+      type: 'Pollution sonore',
+      location: 'Baie de Calvi',
+      time: 'Il y a 5 jours',
       status: 'En cours',
-      imageUrl: '/src/assets/images/logo.png',
-      description: 'Accumulation de matériel de pêche abandonné (filets, lignes, flotteurs) sur une zone étendue. Danger pour la faune marine.',
-      latitude: 46.4425,
-      longitude: -1.8037,
-      categories: ['Matériel de pêche', 'Filets']
+      imageUrl: '/src/assets/images/chimique.jpg',
+      description: 'Travaux maritimes générant une forte pollution sonore. Impact important sur les cétacés dans la zone.',
+      latitude: 42.5667,
+      longitude: 8.7667,
+      categories: ['Sonore', 'Industriel'],
+      createdAt: new Date('2023-06-10T13:20:00')
+    },
+    {
+      id: 12,
+      type: 'Marée noire',
+      location: 'Plage du Prophète',
+      time: 'Il y a 8 heures',
+      status: 'Urgent',
+      imageUrl: '/src/assets/images/marée-noire.jpg',
+      description: 'Petite marée noire détectée. Baignade fortement déconseillée. Forte odeur et couleur suspecte de l\'eau.',
+      latitude: 43.2725,
+      longitude: 5.3661,
+      categories: ['Hydrocarbures', 'Toxique'],
+      createdAt: new Date('2023-06-15T09:00:00')
     }
   ];
   

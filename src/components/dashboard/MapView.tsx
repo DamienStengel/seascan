@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap, LayerGroup } from 'react-leaflet';
-import { Icon, LatLngExpression, LatLngBounds } from 'leaflet';
+import { Icon, divIcon, LatLngExpression } from 'leaflet';
 import { motion } from 'framer-motion';
 import { Signalement, Event } from '@/types';
 import 'leaflet/dist/leaflet.css';
@@ -30,37 +30,87 @@ const MapView: React.FC<MapViewProps> = ({ reports, events = [], center = [46.22
   // Fonction pour déterminer l'icône en fonction du type de signalement
   const getMarkerIcon = (type: string, isEvent = false) => {
     if (isEvent) {
-      // Icône pour les événements (verte)
-      return new Icon({
-        iconUrl: '/src/assets/images/event-marker.png',
-        iconSize: [38, 38],
-        iconAnchor: [19, 38],
-        popupAnchor: [0, -35],
-        className: 'event-marker'
+      // Utiliser un divIcon pour les événements (vert)
+      return divIcon({
+        className: 'custom-div-icon',
+        html: `<div class="marker-pin bg-green-600">
+                <span class="text-white text-xs font-bold">E</span>
+               </div>`,
+        iconSize: [30, 42],
+        iconAnchor: [15, 42]
       });
     } else {
-      // Utiliser une couleur différente selon le type de signalement
-      let color = 'text-red-600';
+      // Déterminer la couleur et l'icône en fonction du type de signalement
+      let bgColor = 'bg-red-600';
+      let letter = 'P'; // P pour pollution par défaut
       
       if (type.toLowerCase().includes('plastique') || type.toLowerCase().includes('déchet')) {
-        color = 'text-orange-600';
-      } else if (type.toLowerCase().includes('hydrocarbure') || type.toLowerCase().includes('chimique')) {
-        color = 'text-red-600';
+        bgColor = 'bg-orange-600';
+        letter = 'P';
+      } else if (type.toLowerCase().includes('hydrocarbure') || type.toLowerCase().includes('marée')) {
+        bgColor = 'bg-red-600';
+        letter = 'H';
       } else if (type.toLowerCase().includes('filet') || type.toLowerCase().includes('pêche')) {
-        color = 'text-yellow-600';
+        bgColor = 'bg-yellow-600';
+        letter = 'F';
+      } else if (type.toLowerCase().includes('chimique')) {
+        bgColor = 'bg-purple-600';
+        letter = 'C';
       } else if (type.toLowerCase().includes('algue') || type.toLowerCase().includes('biologique')) {
-        color = 'text-green-700';
+        bgColor = 'bg-green-700';
+        letter = 'B';
       }
       
-      return new Icon({
-        iconUrl: '/src/assets/images/pollution-marker.png',
-        iconSize: [32, 32],
-        iconAnchor: [16, 32],
-        popupAnchor: [0, -30],
-        className: `report-marker ${color}`
+      return divIcon({
+        className: 'custom-div-icon',
+        html: `<div class="marker-pin ${bgColor}">
+                <span class="text-white text-xs font-bold">${letter}</span>
+               </div>`,
+        iconSize: [30, 42],
+        iconAnchor: [15, 42]
       });
     }
   };
+  
+  // Injecter le CSS nécessaire pour les marqueurs
+  useEffect(() => {
+    // Ajouter le style pour les marqueurs personnalisés s'il n'existe pas déjà
+    if (!document.getElementById('marker-styles')) {
+      const style = document.createElement('style');
+      style.id = 'marker-styles';
+      style.innerHTML = `
+        .marker-pin {
+          width: 30px;
+          height: 30px;
+          border-radius: 50% 50% 50% 0;
+          background: #c30b82;
+          position: relative;
+          transform: rotate(-45deg);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+        }
+        .marker-pin::after {
+          content: '';
+          width: 22px;
+          height: 22px;
+          border-radius: 50%;
+          background: white;
+          position: absolute;
+          top: 4px;
+          left: 4px;
+        }
+        .marker-pin span {
+          transform: rotate(45deg);
+          position: relative;
+          z-index: 1;
+          font-weight: bold;
+        }
+      `;
+      document.head.appendChild(style);
+    }
+  }, []);
   
   // Traiter les coordonnées pour les marqueurs de signalements
   const reportMarkers = reports.map(report => {

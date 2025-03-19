@@ -36,6 +36,37 @@ const HomeTab: React.FC<HomeTabProps> = ({ reports, onReportClick }) => {
     }
   ]
   
+  // Trier les signalements par date (plus récent en premier) et limiter à 5 résultats
+  const sortedReports = [...recentReports].sort((a, b) => {
+    // Si les objets ont une propriété date, l'utiliser
+    if (a.createdAt && b.createdAt) {
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+    }
+    
+    // Sinon, trier en fonction du champ 'time' (approximatif)
+    const timeA = a.time || '';
+    const timeB = b.time || '';
+    
+    // Plus la durée est courte, plus c'est récent
+    if (timeA.includes('heures') && timeB.includes('heures')) {
+      const hoursA = parseInt(timeA.match(/\d+/)?.[0] || '0');
+      const hoursB = parseInt(timeB.match(/\d+/)?.[0] || '0');
+      return hoursA - hoursB;
+    }
+    
+    // Priorité par type de durée (heures > jour > semaine)
+    if (timeA.includes('heures') && !timeB.includes('heures')) return -1;
+    if (!timeA.includes('heures') && timeB.includes('heures')) return 1;
+    
+    if (timeA.includes('jour') && timeB.includes('jour')) {
+      const daysA = parseInt(timeA.match(/\d+/)?.[0] || '0');
+      const daysB = parseInt(timeB.match(/\d+/)?.[0] || '0');
+      return daysA - daysB;
+    }
+    
+    return 0;
+  }).slice(0, 5);
+  
   // Données fictives pour les événements à venir
   const upcomingEvents: Event[] = [
     {
@@ -144,7 +175,7 @@ const HomeTab: React.FC<HomeTabProps> = ({ reports, onReportClick }) => {
         </div>
         
         <div className="space-y-3">
-          {recentReports.map(report => (
+          {sortedReports.map(report => (
             <motion.div 
               key={report.id} 
               className="bg-white rounded-xl shadow-sm p-3 flex items-center cursor-pointer transform hover:translate-x-1 transition-transform"
