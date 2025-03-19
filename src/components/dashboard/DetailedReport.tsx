@@ -1,6 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Signalement, User } from '@/types';
+import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
+import { divIcon } from 'leaflet';
+import 'leaflet/dist/leaflet.css';
+
+// Composant pour centrer la carte sur une position
+const SetViewOnChange = ({ center, zoom }: { center: [number, number], zoom: number }) => {
+  const map = useMap();
+  useEffect(() => {
+    map.setView(center, zoom);
+  }, [center, zoom, map]);
+  return null;
+};
 
 interface DetailedReportProps {
   report: Signalement;
@@ -9,6 +21,7 @@ interface DetailedReportProps {
 
 const DetailedReport: React.FC<DetailedReportProps> = ({ report, onClose }) => {
   const [activeTab, setActiveTab] = useState<'info' | 'photos' | 'map'>('info');
+  const [mapReady, setMapReady] = useState(false);
   
   // Données mockées pour les utilisateurs ayant participé
   const participants: User[] = [
@@ -27,6 +40,89 @@ const DetailedReport: React.FC<DetailedReportProps> = ({ report, onClose }) => {
       profilePicture: '/src/assets/images/logo.png'
     }
   ];
+  
+  // Créer l'icône de marqueur pour la carte
+  const locationMarkerIcon = divIcon({
+    className: 'custom-div-icon',
+    html: `<div class="location-marker">
+            <div class="pulse"></div>
+            <div class="pin"></div>
+           </div>`,
+    iconSize: [30, 30],
+    iconAnchor: [15, 30]
+  });
+  
+  // Injecter le CSS nécessaire pour les marqueurs de carte
+  useEffect(() => {
+    if (!document.getElementById('location-marker-styles')) {
+      const style = document.createElement('style');
+      style.id = 'location-marker-styles';
+      style.innerHTML = `
+        .location-marker {
+          position: relative;
+        }
+        .location-marker .pin {
+          width: 20px;
+          height: 20px;
+          border-radius: 50% 50% 50% 0;
+          background: #2563eb;
+          position: absolute;
+          transform: rotate(-45deg);
+          left: 50%;
+          top: 50%;
+          margin: -10px 0 0 -10px;
+          box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+        .location-marker .pin::after {
+          content: '';
+          width: 12px;
+          height: 12px;
+          margin: 4px 0 0 4px;
+          background: white;
+          position: absolute;
+          border-radius: 50%;
+        }
+        .location-marker .pulse {
+          background: rgba(37, 99, 235, 0.3);
+          border-radius: 50%;
+          height: 30px;
+          width: 30px;
+          position: absolute;
+          left: 50%;
+          top: 50%;
+          margin: -15px 0 0 -15px;
+          transform: rotateX(55deg);
+          z-index: -1;
+          animation: pulse 2s ease-out infinite;
+        }
+        @keyframes pulse {
+          0% {
+            transform: scale(0.1, 0.1);
+            opacity: 0;
+          }
+          50% {
+            opacity: 1;
+          }
+          100% {
+            transform: scale(1.2, 1.2);
+            opacity: 0;
+          }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+  }, []);
+  
+  // Simulation du chargement de la carte
+  useEffect(() => {
+    const timer = setTimeout(() => setMapReady(true), 500);
+    return () => clearTimeout(timer);
+  }, []);
+  
+  // Coordonnées du signalement
+  const reportCoordinates: [number, number] = report.latitude && report.longitude
+    ? [report.latitude, report.longitude]
+    : [46.227, 2.213]; // Position par défaut (France)
   
   // Fonction pour déterminer la couleur du statut
   const getStatusColor = (status: string) => {
@@ -280,15 +376,37 @@ const DetailedReport: React.FC<DetailedReportProps> = ({ report, onClose }) => {
               <div className="space-y-4">
                 <h3 className="text-lg font-semibold mb-2">Localisation</h3>
                 
-                {/* Carte (placeholder) */}
-                <div className="h-64 bg-gray-200 rounded-lg flex items-center justify-center">
-                  <div className="text-center text-gray-500">
-                    <svg className="w-8 h-8 mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
-                    </svg>
-                    <div className="text-sm font-medium">Carte interactive</div>
-                    <div className="text-xs">(Fonctionnalité disponible)</div>
-                  </div>
+                {/* Carte interactive */}
+                <div className="h-64 bg-gray-200 rounded-lg overflow-hidden relative">
+                  {mapReady ? (
+                    <MapContainer
+                      center={reportCoordinates}
+                      zoom={13}
+                      style={{ height: '100%', width: '100%' }}
+                      zoomControl={true}
+                      attributionControl={false}
+                      className="z-10"
+                    >
+                      <TileLayer
+                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                      />
+                      <SetViewOnChange center={reportCoordinates} zoom={13} />
+                      <Marker
+                        position={reportCoordinates}
+                        icon={locationMarkerIcon}
+                      >
+                        <Popup>
+                          {report.type}<br/>
+                          {report.location}
+                        </Popup>
+                      </Marker>
+                    </MapContainer>
+                  ) : (
+                    <div className="h-full w-full flex items-center justify-center">
+                      <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                    </div>
+                  )}
                 </div>
                 
                 {/* Coordonnées GPS */}

@@ -331,6 +331,9 @@ const DashboardScreen: React.FC = () => {
       case 'profile':
         navigate('/dashboard/profile');
         break;
+      case 'all-reports':
+        navigate('/dashboard/all-reports');
+        break;
     }
   };
   
@@ -464,7 +467,7 @@ const DashboardScreen: React.FC = () => {
               } 
             />
             <Route 
-              path="/all-reports" 
+              path="/dashboard/all-reports" 
               element={
                 <motion.div
                   key="all-reports"

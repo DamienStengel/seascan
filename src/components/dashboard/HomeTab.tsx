@@ -138,12 +138,12 @@ const HomeTab: React.FC<HomeTabProps> = ({ reports, onReportClick }) => {
   
   // Fonction pour naviguer vers la page de tous les signalements
   const handleViewAllReports = () => {
-    navigate('/all-reports');
+    navigate('/dashboard/all-reports');
   };
   
   // Fonction pour naviguer vers la page des événements
   const handleViewAllEvents = () => {
-    navigate('/dashboard/events');
+    navigate('/events');
   };
   
   return (
