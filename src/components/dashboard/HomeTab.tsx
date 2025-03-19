@@ -138,7 +138,7 @@ const HomeTab: React.FC<HomeTabProps> = ({ reports, onReportClick }) => {
   
   // Fonction pour naviguer vers la page de tous les signalements
   const handleViewAllReports = () => {
-    navigate('/dashboard/all-reports');
+    navigate('/all-reports');
   };
   
   // Fonction pour naviguer vers la page des événements
@@ -203,7 +203,7 @@ const HomeTab: React.FC<HomeTabProps> = ({ reports, onReportClick }) => {
               onClick={() => handleReportClick(report)}
             >
               <img 
-                src={report.imageUrl} 
+                src={report.imageUrl || '/src/assets/images/plastique.jpg'} 
                 alt={report.type} 
                 className="w-16 h-16 rounded-lg object-cover mr-3" 
               />
