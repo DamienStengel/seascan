@@ -28,7 +28,6 @@ const LoginScreen: React.FC = () => {
     <div className="flex flex-col h-screen bg-white">
       {/* En-tête */}
       <Header 
-        title="Connexion" 
         showBackButton 
         onBackClick={() => navigate('/')}
       />

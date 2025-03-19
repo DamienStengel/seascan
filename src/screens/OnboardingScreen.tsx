@@ -61,7 +61,7 @@ const OnboardingScreen: React.FC = () => {
         {/* Header avec logo plus petit - reduced padding */}
         <header className="pt-4 px-4 flex items-center">
           <Logo size="medium" className="mr-2" />
-          <h1 className="text-2xl font-bold">O'sea Pulse</h1>
+          <h1 className="text-2xl font-bold">O'Sea Pulse</h1>
         </header>
 
         <div className="flex-1 flex flex-col px-4 justify-between py-4 overflow-hidden">

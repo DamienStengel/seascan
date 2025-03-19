@@ -467,7 +467,7 @@ const DashboardScreen: React.FC = () => {
               } 
             />
             <Route 
-              path="/dashboard/all-reports" 
+              path="/all-reports" 
               element={
                 <motion.div
                   key="all-reports"

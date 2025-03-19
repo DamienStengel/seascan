@@ -1,7 +1,6 @@
 import React from 'react'
 
 interface HeaderProps {
-  title?: string
   showBackButton?: boolean
   showSearch?: boolean
   transparent?: boolean
@@ -11,7 +10,6 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({
-  title,
   showBackButton = false,
   showSearch = false,
   transparent = false,

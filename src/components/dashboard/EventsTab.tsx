@@ -104,7 +104,7 @@ const EventsTab: React.FC<EventsTabProps> = ({ events: propEvents }) => {
           }
         }}
       >
-        {eventsToDisplay.map((event, index) => (
+        {eventsToDisplay.map((event) => (
           <motion.div 
             key={event.id} 
             className="bg-white rounded-xl shadow-sm overflow-hidden card-hover"

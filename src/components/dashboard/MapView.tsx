@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap, LayerGroup } from 'react-leaflet';
-import { Icon, divIcon, LatLngExpression } from 'leaflet';
+import { divIcon, LatLngExpression } from 'leaflet';
 import { motion } from 'framer-motion';
 import { Signalement, Event } from '@/types';
 import 'leaflet/dist/leaflet.css';
@@ -24,7 +24,7 @@ const SetViewOnChange = ({ center, zoom }: { center: LatLngExpression, zoom: num
 
 // Composant de carte pour visualiser les signalements
 const MapView: React.FC<MapViewProps> = ({ reports, events = [], center = [46.2276, 2.2137], zoom = 5, onReportClick }) => {
-  const [selectedReport, setSelectedReport] = useState<Signalement | null>(null);
+  const [, setSelectedReport] = useState<Signalement | null>(null);
   const [mapReady, setMapReady] = useState(false);
   
   // Icône unique pour tous les signalements

@@ -1,8 +1,7 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Camera, Location, Image, Category, CameraType } from '@/types';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
-import { Icon, Map, LeafletMouseEvent, divIcon } from 'leaflet';
+import { LeafletMouseEvent, divIcon } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
 // Composant pour ajouter un gestionnaire de clic à la carte
