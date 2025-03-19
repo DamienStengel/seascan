@@ -10,6 +10,7 @@ import EventsTab from '@/components/dashboard/EventsTab'
 import ProfileTab from '@/components/dashboard/ProfileTab'
 import ReportForm from '@/components/dashboard/ReportForm'
 import DetailedReport from '@/components/dashboard/DetailedReport'
+import AllReportsTab from '@/components/dashboard/AllReportsTab'
 import { Signalement, Event } from '@/types'
 
 const DashboardScreen: React.FC = () => {
@@ -19,7 +20,41 @@ const DashboardScreen: React.FC = () => {
   const [showReportForm, setShowReportForm] = useState(false)
   const [selectedReport, setSelectedReport] = useState<Signalement | null>(null)
   
-  // Données mockées pour les signalements
+  // Fonction pour obtenir l'image appropriée selon le type de signalement
+  const getImageForReportType = (type: string): string => {
+    type = type.toLowerCase();
+    
+    if (type.includes('plastique') || type.includes('déchet') || type.includes('micro')) {
+      return '/src/assets/images/plastique.jpg';
+    } else if (type.includes('hydrocarbure') || type.includes('marée') || type.includes('carburant')) {
+      return '/src/assets/images/marée-noire.jpg';
+    } else if (type.includes('filet') || type.includes('pêche')) {
+      return '/src/assets/images/filet.jpg';
+    } else if (type.includes('chimique') || type.includes('algue') || type.includes('biologique')) {
+      return '/src/assets/images/chimique.jpg';
+    }
+    
+    // Image par défaut selon les catégories
+    return '/src/assets/images/plastique.jpg';
+  };
+  
+  // Fonction pour obtenir l'image appropriée selon le type d'événement
+  const getImageForEventType = (title: string): string => {
+    title = title.toLowerCase();
+    
+    if (title.includes('nettoyage') || title.includes('collecte') || title.includes('ramassage')) {
+      return '/src/assets/images/plastique.jpg';
+    } else if (title.includes('sensibilisation') || title.includes('formation') || title.includes('atelier')) {
+      return '/src/assets/images/chimique.jpg';
+    } else if (title.includes('observation') || title.includes('cétacés')) {
+      return '/src/assets/images/marée-noire.jpg';
+    }
+    
+    // Image par défaut
+    return '/src/assets/images/plastique.jpg';
+  };
+  
+  // Données mockées pour les signalements avec images mises à jour
   const recentReports: Signalement[] = [
     {
       id: 1,
@@ -191,7 +226,7 @@ const DashboardScreen: React.FC = () => {
       participants: 17,
       maxParticipants: 30,
       date: new Date('2023-06-15T09:00:00'),
-      imageUrl: '/src/assets/images/logo.png',
+      imageUrl: '/src/assets/images/plastique.jpg',
       organizer: 'Association Mer Propre',
       latitude: 44.7372,
       longitude: -1.2347
@@ -206,7 +241,7 @@ const DashboardScreen: React.FC = () => {
       participants: 9,
       maxParticipants: 20,
       date: new Date('2023-06-22T14:30:00'),
-      imageUrl: '/src/assets/images/logo.png',
+      imageUrl: '/src/assets/images/chimique.jpg',
       organizer: 'Fondation Océans Bleus',
       latitude: 43.4832,
       longitude: -1.5586
@@ -221,7 +256,7 @@ const DashboardScreen: React.FC = () => {
       participants: 5,
       maxParticipants: 15,
       date: new Date('2023-07-05T10:00:00'),
-      imageUrl: '/src/assets/images/logo.png',
+      imageUrl: '/src/assets/images/chimique.jpg',
       organizer: 'OcéaPulse Team',
       latitude: 44.6611,
       longitude: -1.1681
@@ -236,7 +271,7 @@ const DashboardScreen: React.FC = () => {
       participants: 12,
       maxParticipants: 25,
       date: new Date('2023-07-18T09:30:00'),
-      imageUrl: '/src/assets/images/logo.png',
+      imageUrl: '/src/assets/images/plastique.jpg',
       organizer: 'Capbreton Environnement',
       latitude: 43.6428,
       longitude: -1.4455
@@ -251,7 +286,7 @@ const DashboardScreen: React.FC = () => {
       participants: 23,
       maxParticipants: 40,
       date: new Date('2023-06-29T08:30:00'),
-      imageUrl: '/src/assets/images/logo.png',
+      imageUrl: '/src/assets/images/plastique.jpg',
       organizer: 'Marseille Environnement',
       latitude: 43.2102,
       longitude: 5.4218
@@ -266,7 +301,7 @@ const DashboardScreen: React.FC = () => {
       participants: 8,
       maxParticipants: 12,
       date: new Date('2023-07-10T07:00:00'),
-      imageUrl: '/src/assets/images/logo.png',
+      imageUrl: '/src/assets/images/marée-noire.jpg',
       organizer: 'SOS Dauphins',
       latitude: 43.2726,
       longitude: 6.6406
@@ -281,7 +316,7 @@ const DashboardScreen: React.FC = () => {
       participants: 14,
       maxParticipants: 30,
       date: new Date('2023-07-22T10:00:00'),
-      imageUrl: '/src/assets/images/logo.png',
+      imageUrl: '/src/assets/images/chimique.jpg',
       organizer: 'Éducation Environnement 83',
       latitude: 43.2272,
       longitude: 6.6648
@@ -296,7 +331,7 @@ const DashboardScreen: React.FC = () => {
       participants: 11,
       maxParticipants: 50,
       date: new Date('2023-08-05T14:00:00'),
-      imageUrl: '/src/assets/images/logo.png',
+      imageUrl: '/src/assets/images/plastique.jpg',
       organizer: 'Normandie ZéroPlastic',
       latitude: 49.3536,
       longitude: 0.0622
@@ -453,6 +488,21 @@ const DashboardScreen: React.FC = () => {
                   className="h-full"
                 >
                   <ProfileTab />
+                </motion.div>
+              } 
+            />
+            <Route 
+              path="/all-reports" 
+              element={
+                <motion.div
+                  key="all-reports"
+                  initial="initial"
+                  animate="in"
+                  exit="out"
+                  variants={pageVariants}
+                  className="h-full"
+                >
+                  <AllReportsTab reports={recentReports} onReportClick={handleReportClick} />
                 </motion.div>
               } 
             />

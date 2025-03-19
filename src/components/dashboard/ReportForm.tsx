@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Camera, Location, Image, Category, CameraType } from '@/types';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
-import { Icon, Map, LeafletMouseEvent } from 'leaflet';
+import { Icon, Map, LeafletMouseEvent, divIcon } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
 // Composant pour ajouter un gestionnaire de clic à la carte
@@ -167,6 +167,78 @@ const ReportForm: React.FC<ReportFormProps> = ({ onClose, onSubmit }) => {
     </div>
   );
 
+  // Marqueur personnalisé pour la position sélectionnée
+  const locationMarkerIcon = divIcon({
+    className: 'custom-div-icon',
+    html: `<div class="location-marker">
+            <div class="pulse"></div>
+            <div class="pin"></div>
+           </div>`,
+    iconSize: [30, 30],
+    iconAnchor: [15, 30]
+  });
+  
+  // Ajouter des styles pour les marqueurs si nécessaire
+  useEffect(() => {
+    if (!document.getElementById('location-marker-styles')) {
+      const style = document.createElement('style');
+      style.id = 'location-marker-styles';
+      style.innerHTML = `
+        .location-marker {
+          position: relative;
+        }
+        .location-marker .pin {
+          width: 20px;
+          height: 20px;
+          border-radius: 50% 50% 50% 0;
+          background: #2563eb;
+          position: absolute;
+          transform: rotate(-45deg);
+          left: 50%;
+          top: 50%;
+          margin: -10px 0 0 -10px;
+          box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+        .location-marker .pin::after {
+          content: '';
+          width: 12px;
+          height: 12px;
+          margin: 4px 0 0 4px;
+          background: white;
+          position: absolute;
+          border-radius: 50%;
+        }
+        .location-marker .pulse {
+          background: rgba(37, 99, 235, 0.3);
+          border-radius: 50%;
+          height: 30px;
+          width: 30px;
+          position: absolute;
+          left: 50%;
+          top: 50%;
+          margin: -15px 0 0 -15px;
+          transform: rotateX(55deg);
+          z-index: -1;
+          animation: pulse 2s ease-out infinite;
+        }
+        @keyframes pulse {
+          0% {
+            transform: scale(0.1, 0.1);
+            opacity: 0;
+          }
+          50% {
+            opacity: 1;
+          }
+          100% {
+            transform: scale(1.2, 1.2);
+            opacity: 0;
+          }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+  }, []);
+
   return (
     <div className="fixed inset-0 z-[1000] flex flex-col bg-gray-50">
       {/* En-tête avec dégradé */}
@@ -318,12 +390,7 @@ const ReportForm: React.FC<ReportFormProps> = ({ onClose, onSubmit }) => {
                     {location.coordinates && (
                       <Marker
                         position={[location.coordinates.lat, location.coordinates.lng]}
-                        icon={new Icon({
-                          iconUrl: '/src/assets/images/pollution-marker.png',
-                          iconSize: [32, 32],
-                          iconAnchor: [16, 32],
-                          popupAnchor: [0, -30]
-                        })}
+                        icon={locationMarkerIcon}
                       >
                         <Popup>
                           Position du signalement

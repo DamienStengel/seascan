@@ -28,48 +28,75 @@ const MapView: React.FC<MapViewProps> = ({ reports, events = [], center = [46.22
   const [mapReady, setMapReady] = useState(false);
   
   // Fonction pour déterminer l'icône en fonction du type de signalement
-  const getMarkerIcon = (type: string, isEvent = false) => {
-    if (isEvent) {
-      // Utiliser un divIcon pour les événements (vert)
-      return divIcon({
-        className: 'custom-div-icon',
-        html: `<div class="marker-pin bg-green-600">
-                <span class="text-white text-xs font-bold">E</span>
-               </div>`,
-        iconSize: [30, 42],
-        iconAnchor: [15, 42]
-      });
-    } else {
-      // Déterminer la couleur et l'icône en fonction du type de signalement
-      let bgColor = 'bg-red-600';
-      let letter = 'P'; // P pour pollution par défaut
-      
-      if (type.toLowerCase().includes('plastique') || type.toLowerCase().includes('déchet')) {
-        bgColor = 'bg-orange-600';
-        letter = 'P';
-      } else if (type.toLowerCase().includes('hydrocarbure') || type.toLowerCase().includes('marée')) {
-        bgColor = 'bg-red-600';
-        letter = 'H';
-      } else if (type.toLowerCase().includes('filet') || type.toLowerCase().includes('pêche')) {
-        bgColor = 'bg-yellow-600';
-        letter = 'F';
-      } else if (type.toLowerCase().includes('chimique')) {
-        bgColor = 'bg-purple-600';
-        letter = 'C';
-      } else if (type.toLowerCase().includes('algue') || type.toLowerCase().includes('biologique')) {
-        bgColor = 'bg-green-700';
-        letter = 'B';
-      }
-      
-      return divIcon({
-        className: 'custom-div-icon',
-        html: `<div class="marker-pin ${bgColor}">
-                <span class="text-white text-xs font-bold">${letter}</span>
-               </div>`,
-        iconSize: [30, 42],
-        iconAnchor: [15, 42]
-      });
+  const getReportMarkerIcon = (report: Signalement) => {
+    // Déterminer la couleur et l'icône en fonction du type de signalement
+    let bgColor = 'bg-red-600';
+    let letter = 'P'; // P pour pollution par défaut
+    let imageType = 'plastique'; // Par défaut
+    
+    const type = report.type.toLowerCase();
+    
+    if (type.includes('plastique') || type.includes('déchet')) {
+      bgColor = 'bg-orange-600';
+      letter = 'P';
+      imageType = 'plastique';
+    } else if (type.includes('hydrocarbure') || type.includes('marée') || type.includes('carburant')) {
+      bgColor = 'bg-red-600';
+      letter = 'H';
+      imageType = 'marée-noire';
+    } else if (type.includes('filet') || type.includes('pêche')) {
+      bgColor = 'bg-yellow-600';
+      letter = 'F';
+      imageType = 'filet';
+    } else if (type.includes('chimique')) {
+      bgColor = 'bg-purple-600';
+      letter = 'C';
+      imageType = 'chimique';
+    } else if (type.includes('algue') || type.includes('biologique')) {
+      bgColor = 'bg-green-700';
+      letter = 'B';
+      imageType = 'chimique';
     }
+    
+    return divIcon({
+      className: 'custom-div-icon',
+      html: `<div class="marker-pin ${bgColor}" data-type="${imageType}">
+              <span class="text-white text-xs font-bold">${letter}</span>
+             </div>`,
+      iconSize: [30, 42],
+      iconAnchor: [15, 42]
+    });
+  };
+  
+  // Fonction pour déterminer l'icône pour les événements
+  const getEventMarkerIcon = (event: Event) => {
+    // Déterminer le type d'événement d'après son titre
+    let eventType = 'standard';
+    const title = event.title.toLowerCase();
+    
+    if (title.includes('nettoyage') || title.includes('ramassage') || title.includes('collecte')) {
+      eventType = 'cleanup';
+    } else if (title.includes('sensibilisation') || title.includes('atelier') || title.includes('formation')) {
+      eventType = 'education';
+    } else if (title.includes('observation') || title.includes('recensement')) {
+      eventType = 'observation';
+    }
+    
+    // Différentes icônes selon le type d'événement
+    return divIcon({
+      className: 'custom-div-icon',
+      html: `<div class="event-marker" data-type="${eventType}">
+              <div class="event-pin bg-green-600">
+                <span class="text-white text-xs font-bold">${
+                  eventType === 'cleanup' ? '🧹' : 
+                  eventType === 'education' ? '📚' : 
+                  eventType === 'observation' ? '🔍' : '📅'
+                }</span>
+              </div>
+             </div>`,
+      iconSize: [30, 42],
+      iconAnchor: [15, 42]
+    });
   };
   
   // Injecter le CSS nécessaire pour les marqueurs
@@ -83,7 +110,6 @@ const MapView: React.FC<MapViewProps> = ({ reports, events = [], center = [46.22
           width: 30px;
           height: 30px;
           border-radius: 50% 50% 50% 0;
-          background: #c30b82;
           position: relative;
           transform: rotate(-45deg);
           display: flex;
@@ -106,6 +132,38 @@ const MapView: React.FC<MapViewProps> = ({ reports, events = [], center = [46.22
           position: relative;
           z-index: 1;
           font-weight: bold;
+        }
+        
+        .event-marker {
+          position: relative;
+        }
+        .event-pin {
+          width: 34px;
+          height: 34px;
+          border-radius: 50%;
+          background: #16a34a;
+          position: relative;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        .event-pin::after {
+          content: '';
+          position: absolute;
+          bottom: -8px;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 0;
+          height: 0;
+          border-left: 8px solid transparent;
+          border-right: 8px solid transparent;
+          border-top: 10px solid #16a34a;
+        }
+        .event-pin span {
+          font-size: 16px;
+          position: relative;
+          z-index: 1;
         }
       `;
       document.head.appendChild(style);
@@ -181,13 +239,32 @@ const MapView: React.FC<MapViewProps> = ({ reports, events = [], center = [46.22
     >
       {/* Légende de la carte */}
       <div className="absolute bottom-4 right-4 z-30 bg-white p-3 rounded-lg shadow-md text-sm">
-        <div className="flex items-center mb-2">
-          <div className="w-4 h-4 bg-red-500 rounded-full mr-2"></div>
-          <span>Signalements</span>
-        </div>
-        <div className="flex items-center">
-          <div className="w-4 h-4 bg-green-600 rounded-full mr-2"></div>
-          <span>Événements</span>
+        <div className="font-medium mb-2 text-gray-700">Légende</div>
+        
+        <div className="space-y-2">
+          <div className="font-medium text-xs text-gray-600">Signalements :</div>
+          <div className="flex items-center gap-2 mb-1">
+            <div className="w-4 h-4 bg-red-600 rounded-full"></div>
+            <span>Hydrocarbures</span>
+          </div>
+          <div className="flex items-center gap-2 mb-1">
+            <div className="w-4 h-4 bg-orange-600 rounded-full"></div>
+            <span>Déchets plastiques</span>
+          </div>
+          <div className="flex items-center gap-2 mb-1">
+            <div className="w-4 h-4 bg-yellow-600 rounded-full"></div>
+            <span>Filets</span>
+          </div>
+          <div className="flex items-center gap-2 mb-1">
+            <div className="w-4 h-4 bg-purple-600 rounded-full"></div>
+            <span>Chimique</span>
+          </div>
+          
+          <div className="font-medium text-xs text-gray-600 mt-3">Événements :</div>
+          <div className="flex items-center gap-2">
+            <div className="w-4 h-4 bg-green-600 rounded-full"></div>
+            <span>Collectes et ateliers</span>
+          </div>
         </div>
       </div>
 
@@ -211,7 +288,7 @@ const MapView: React.FC<MapViewProps> = ({ reports, events = [], center = [46.22
             <Marker
               key={`report-${report.id}`}
               position={report.position}
-              icon={getMarkerIcon(report.type)}
+              icon={getReportMarkerIcon(report)}
               eventHandlers={{
                 click: () => {
                   if (onReportClick) {
@@ -243,7 +320,7 @@ const MapView: React.FC<MapViewProps> = ({ reports, events = [], center = [46.22
             <Marker
               key={`event-${event.id}`}
               position={event.position}
-              icon={getMarkerIcon(event.title, true)}
+              icon={getEventMarkerIcon(event)}
             >
               <Popup>
                 <div className="p-2">

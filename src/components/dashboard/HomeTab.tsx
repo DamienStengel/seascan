@@ -1,6 +1,7 @@
 import React from 'react'
 import { motion } from 'framer-motion'
 import { Signalement, Event } from '@/types'
+import { useNavigate } from 'react-router-dom'
 
 interface HomeTabProps {
   reports?: Signalement[];
@@ -8,6 +9,8 @@ interface HomeTabProps {
 }
 
 const HomeTab: React.FC<HomeTabProps> = ({ reports, onReportClick }) => {
+  const navigate = useNavigate();
+  
   // Si aucun signalement n'est fourni, utiliser des données fictives
   const recentReports: Signalement[] = reports || [
     {
@@ -133,6 +136,16 @@ const HomeTab: React.FC<HomeTabProps> = ({ reports, onReportClick }) => {
     }
   };
   
+  // Fonction pour naviguer vers la page de tous les signalements
+  const handleViewAllReports = () => {
+    navigate('/dashboard/all-reports');
+  };
+  
+  // Fonction pour naviguer vers la page des événements
+  const handleViewAllEvents = () => {
+    navigate('/dashboard/events');
+  };
+  
   return (
     <motion.div 
       className="py-4 px-4 space-y-6"
@@ -171,7 +184,12 @@ const HomeTab: React.FC<HomeTabProps> = ({ reports, onReportClick }) => {
       >
         <div className="flex justify-between items-center mb-3">
           <h2 className="text-xl font-bold">Signalements récents</h2>
-          <button className="text-blue-600 text-sm">Voir tous</button>
+          <button 
+            className="text-blue-600 text-sm font-medium"
+            onClick={handleViewAllReports}
+          >
+            Voir tous
+          </button>
         </div>
         
         <div className="space-y-3">
@@ -208,7 +226,12 @@ const HomeTab: React.FC<HomeTabProps> = ({ reports, onReportClick }) => {
       >
         <div className="flex justify-between items-center mb-3">
           <h2 className="text-xl font-bold">Événements à venir</h2>
-          <button className="text-blue-600 text-sm">Voir tous</button>
+          <button 
+            className="text-blue-600 text-sm font-medium"
+            onClick={handleViewAllEvents}
+          >
+            Voir tous
+          </button>
         </div>
         
         <div className="space-y-3">
