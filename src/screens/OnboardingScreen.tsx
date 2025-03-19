@@ -52,19 +52,19 @@ const OnboardingScreen: React.FC = () => {
 
   return (
       <motion.div
-          className="flex flex-col h-screen bg-gradient-to-b from-blue-600 to-teal-500 text-white"
+          className="flex flex-col h-screen bg-gradient-to-b from-blue-600 to-teal-500 text-white overflow-hidden"
           variants={pageVariants}
           initial="initial"
           animate="animate"
           exit="exit"
       >
-        {/* Header avec logo plus petit */}
-        <header className="pt-6 px-6 flex items-center">
-          <Logo size="small" className="mr-3" />
-          <h1 className="text-2xl font-bold">OceaPulse</h1>
+        {/* Header avec logo plus petit - reduced padding */}
+        <header className="pt-4 px-4 flex items-center">
+          <Logo size="medium" className="mr-2" />
+          <h1 className="text-2xl font-bold">O'sea Pulse</h1>
         </header>
 
-        <div className="flex-1 flex flex-col px-6 justify-between py-6">
+        <div className="flex-1 flex flex-col px-4 justify-between py-4 overflow-hidden">
           {/* Carousel section */}
           <div className="flex-1 flex items-center justify-center">
             <OnboardingCarousel
@@ -75,9 +75,8 @@ const OnboardingScreen: React.FC = () => {
           </div>
 
           {/* Sous-titre et boutons */}
-          <div className="mt-8 text-center">
-
-            <div className="space-y-4 max-w-xs mx-auto">
+          <div className="mt-4 text-center">
+            <div className="space-y-3 max-w-xs mx-auto">
               <motion.button
                   onClick={() => navigate('/dashboard')}
                   className="w-full bg-white text-blue-600 font-medium py-3 rounded-lg shadow-lg transition-standard"
@@ -87,7 +86,7 @@ const OnboardingScreen: React.FC = () => {
                   whileHover="hover"
                   whileTap="tap"
               >
-                Commencer l'exploration
+                Commencer
               </motion.button>
 
               <motion.button
