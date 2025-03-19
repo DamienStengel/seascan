@@ -22,10 +22,10 @@ const DashboardScreen: React.FC = () => {
   
   // Images disponibles pour les signalements
   const pollutionImages = [
-    '/src/assets/images/plastique.jpg',
-    '/src/assets/images/marée-noire.jpg',
-    '/src/assets/images/filet.jpg',
-    '/src/assets/images/chimique.jpg'
+    '/assets/images/plastique.jpg',
+    '/assets/images/marée-noire.jpg',
+    '/assets/images/filet.jpg',
+    '/assets/images/chimique.jpg'
   ];
   
   // Fonction pour obtenir une image aléatoire

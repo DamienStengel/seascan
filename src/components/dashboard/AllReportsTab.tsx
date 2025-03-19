@@ -221,7 +221,7 @@ const AllReportsTab: React.FC<AllReportsTabProps> = ({ reports, onReportClick })
               onClick={() => onReportClick(report)}
             >
               <img 
-                src={report.imageUrl || '/src/assets/images/plastique.jpg'} 
+                src={report.imageUrl || '/assets/images/plastique.jpg'} 
                 alt={report.type} 
                 className="w-16 h-16 rounded-lg object-cover mr-3" 
               />

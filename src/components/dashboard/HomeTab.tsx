@@ -19,7 +19,7 @@ const HomeTab: React.FC<HomeTabProps> = ({ reports, onReportClick }) => {
       location: 'Plage de la Salie',
       time: 'Il y a 2 heures',
       status: 'Très urgent',
-      imageUrl: '/src/assets/images/logo.png'
+      imageUrl: '/assets/images/logo.png'
     },
     {
       id: 2,
@@ -27,7 +27,7 @@ const HomeTab: React.FC<HomeTabProps> = ({ reports, onReportClick }) => {
       location: 'Côte des Basques',
       time: 'Il y a 5 heures',
       status: 'Urgent',
-      imageUrl: '/src/assets/images/logo.png'
+      imageUrl: '/assets/images/logo.png'
     },
     {
       id: 3,
@@ -35,7 +35,7 @@ const HomeTab: React.FC<HomeTabProps> = ({ reports, onReportClick }) => {
       location: 'Port de Capbreton',
       time: 'Hier',
       status: 'En cours',
-      imageUrl: '/src/assets/images/logo.png'
+      imageUrl: '/assets/images/logo.png'
     }
   ]
   
@@ -203,7 +203,7 @@ const HomeTab: React.FC<HomeTabProps> = ({ reports, onReportClick }) => {
               onClick={() => handleReportClick(report)}
             >
               <img 
-                src={report.imageUrl || '/src/assets/images/plastique.jpg'} 
+                src={report.imageUrl || '/assets/images/plastique.jpg'} 
                 alt={report.type} 
                 className="w-16 h-16 rounded-lg object-cover mr-3" 
               />

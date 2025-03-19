@@ -23,7 +23,7 @@ const Logo: React.FC<LogoProps> = ({ size = 'medium', className = '' }) => {
 
   return (
       <img
-          src="/src/assets/images/logo.png"
+          src="/assets/images/logo.png"
           alt="Logo"
           className={`${imageSize} object-contain ${className}`}
       />
